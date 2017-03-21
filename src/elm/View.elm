@@ -31,8 +31,8 @@ view model =
 
 navbar =
   nav
-      [ class "navbar navbar-static-top navbar-light bg-faded text-center"]
-      [ divClass "container-fluid"
+      [ class "navbar navbar-static-top navbar-light bg-faded"]
+      [ divClass "container-fluid text-center"
           [ divClass "btn-group"
               [ linkButton "About" About
               , linkButton "Projects" Projects
