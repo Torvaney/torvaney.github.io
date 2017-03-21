@@ -9838,7 +9838,7 @@ var _user$project$View$navbar = A2(
 	_elm_lang$html$Html$nav,
 	{
 		ctor: '::',
-		_0: _elm_lang$html$Html_Attributes$class('navbar navbar-static-top navbar-light bg-faded'),
+		_0: _elm_lang$html$Html_Attributes$class('navbar navbar-static-top navbar-light bg-faded text-center'),
 		_1: {ctor: '[]'}
 	},
 	{
