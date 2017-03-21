@@ -1,0 +1,51 @@
+.svg-aside {
+  width: 390px;
+  height: 300px;
+
+  align: center;
+}
+
+.pitch-svg {
+  fill: white;
+  stroke-width: 1;
+  stroke: lightgray;
+}
+
+#pitch .shot-circle {
+  fill: white;
+  stroke-width: 2;
+  stroke: gray;
+}
+
+#pitch .shot-shadow {
+  fill: lightgray;
+  stroke-width: 2;
+  stroke: #d3d3d3;
+}
+
+#pitch .dribble-line {
+  fill: white;
+  stroke-width: 2;
+  stroke: #6af451;
+}
+#pitch .dribble-arrow {
+  fill: #6af451;
+}
+
+#pitch .cross-line {
+  stroke-width: 2;
+  stroke: #db3434;
+}
+#pitch .cross-arrow {
+  fill: #db3434;
+}
+
+text {
+  font-family: sans-serif;
+  font-style: normal;
+  font-weight: 100;
+}
+
+#method-img {
+
+}

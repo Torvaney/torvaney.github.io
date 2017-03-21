@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="../src/style/skeleton.css" type="text/css">
+<link rel="stylesheet" href="../src/style/xG.css" type="text/css">
+<title>Torvaney | xG</title>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+
+      <div class="row">
+        <div class="twelve columns">
+          <a href="../index.html">back</a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="twelve columns">
+          <h5 class="top-row">Expected Goals</h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="twelve columns">
+          <p id="explainText">
+            Expected goals is simply a way of estimating chance quality.
+            This is often done by comparing a shot to similar shots taken in the past.
+            <br><br>
+            For instance, an xG of 0.10 corresponds to an estimated 10% chance that a
+             shot results in a goal.<br><br></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="six columns">
+
+          <table id="model-table">
+            <tr>
+              <th>xG model</th>
+              <td>
+                <select id="model" onchange="" class="param-select">
+                  <option value="simple" class="param-option">Simple xG</option>
+                  <option value="caley" class="param-option">Caley v1</option>
+                </select>
+              </td>
+            </tr>
+            </table>
+
+          <table id="param-table">
+            <tr>
+              <th>Header</th>
+              <td>
+                <select id="header" onchange="checkParam(0)" class="param-select">
+                  <option value="no" class="param-option">No</option>
+                  <option value="yes" class="param-option">Yes</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>Assisted by</th>
+              <td>
+                <select id="assist" onchange="checkParam(1)" class="param-select">
+                  <option value="no" class="param-option">-</option>
+                  <option value="cross" class="param-option">Cross</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>Preceded by</th>
+              <td>
+                <select id="pre" onchange="checkParam(2)" class="param-select">
+                  <option value="no" class="param-option">-</option>
+                  <option value="dribble" class="param-option">Dribble</option>
+                </select>
+              </td>
+            </tr>
+          </table>
+
+        </div>
+
+        <div class="six columns">
+          <div id="pitch" class="row" style="margin-top: 5%;">
+            <svg id="pitch-img" class="svg-aside">
+              <!-- The pitch -->
+              <rect class="pitch-svg" width="380" height="280" x=5 y=5></rect>
+               <!-- Penalty area -->
+              <circle class="pitch-svg" cx=190 cy=79.4 r=50></circle>
+              <rect class="pitch-svg" width="219" height="95" x=85 y=5></rect>
+              <rect class="pitch-svg" width="100" height="32.5" x=140 y=5></rect>
+              <circle class="pitch-svg" cx=190 cy=79.4 r=2></circle>
+              <!-- Centre circle -->
+              <circle class="pitch-svg" cx=190 cy=285 r=50 style="fill-opacity:0;"></circle>
+              <circle class="pitch-svg" cx=190 cy=285 r=2 style="fill-opacity:0;"></circle>
+              <!-- Goal -->
+              <rect class="pitch-svg" width="45" height="5" x=167.5 y=0 style="fill:lightgray;fill-opacity:0.5;"></rect>
+              <!-- Shot circle -->
+              <line class="dribble-line" x1=190 y1=320 x2=190 y2=320 marker-end="url(#dribbleTriangle)"></line>
+              <line class="cross-line" x1=-10 y1=155 x2=-10 y2=155 marker-end="url(#crossTriangle)" stroke="url(#crossGrad)"></line>
+              <circle class="shot-shadow" cx=190 cy=155 r=0></circle>
+              <circle class="shot-circle" cx=190 cy=155 r=5></circle>
+              <!-- xG label -->
+              <text class="xG-text" x=10 y=278>Click to move shot location</text>
+
+              <defs>
+                <marker id="crossTriangle"
+                        class="cross-arrow"
+                        viewBox="0 0 10 10"
+                        refX="1" refY="5"
+                        markerWidth="5"
+                        markerHeight="5"
+                        orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" />
+                </marker>
+
+                <marker id="dribbleTriangle"
+                        class="dribble-arrow"
+                        viewBox="0 0 10 10"
+                        refX="1" refY="5"
+                        markerWidth="5"
+                        markerHeight="5"
+                        orient="auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" />
+                </marker>
+
+                <linearGradient id="crossGrad">
+                  <stop offset="0%"   stop-color=#ffffff/>
+                  <stop offset="100%" stop-color=#db3434/>
+                </linearGradient>
+              </defs>
+            </svg>
+
+          </div>
+
+        </div>
+        </div>
+
+      <div class="twelve columns" style="margin-top: 5%;">
+        <p>You can investigate how expected goals relates to match outcomes on <a href="http://dannypage.github.io/expected_goals.html">Danny Page's site.</a><br><br>
+          The 'Caley v1' calculation presumes league average attack speed and uses Michael Caley's <a href="http://cartilagefreecaptain.sbnation.com/2014/9/11/6131661/premier-league-projections-2014#methoderology">expected goals model</a> (<a id="method-img" href="http://cdn0.vox-cdn.com/assets/4996642/all_curves4.png">Version 1</a>)<br><br>
+        There are instances in the Caley version 1 model where the xG value can be more than 1 or otherwise unrealistically high (see shots from tight angles close to the goalline). This is a known issue and is no longer present in the more sophisticated <a href="http://cartilagefreecaptain.sbnation.com/2015/10/19/9295905/premier-league-projections-and-new-expected-goals">version 2</a>.</p>
+      </div>
+
+    </div>
+  </header>
+
+<!-- d3 -->
+<script type="text/javascript">
+
+(function() {
+
+  var pitchSvg = d3.select("#pitch-img"),
+      factorTable = d3.select("#factor-table");
+
+  /*------Pitch map-------
+  ------------------------*/
+
+  // The maths
+
+  function getCaleyXG(x, y, paramArray) {
+    var pitchX = (x-5)*68/380,
+        pitchY = (y-5)*50/280,
+        centreX = 34, // x coord of centre line in m
+        centreY = 0, // y coord of centre line in m
+        goalEdge = [167.5, 212.5],
+        relX = Math.abs(centreX - pitchX), // x distance from centre
+        channelX = (22.5)*68/380; // distance between channel and centre on m
+
+    if (x < 5 | y <5 | x > 385 | y > 285) { // if shot is off the pitch
+      return 0;
+    } else {
+
+      var shotAngle = Math.atan(pitchY/relX),
+          stdAngle = Math.atan(pitchY/channelX);
+
+      // get relative angle
+      if (relX < channelX) { // if shot is inside central channel
+        var relAngle = 1;
+      } else {
+        var relAngle = shotAngle/stdAngle;
+      }
+
+      var dist = pitchY,
+          adjDist = dist/(Math.pow(relAngle, 1.32)),
+          speed = 2.5, // assume avg speed (yards/sec)
+          spAdjDist =  adjDist * (1 - (0.1 * (speed-2.5)));
+
+    var isDribble = (paramArray[2] == "dribble"),
+        isCross = (paramArray[1] == "cross"),
+        isHeader = (paramArray[0] == "yes");
+
+      if (isDribble) { // preceded by a dribble
+        var xG = 1.11*Math.exp(-0.10*spAdjDist);
+      } else if (isCross) {
+        if (isHeader) {
+          var xG = 0.65*Math.exp(-0.21*spAdjDist);
+        } else {
+          var xG = 0.97*Math.exp(-0.19*spAdjDist);
+        }
+      } else {
+        if (isHeader) {
+          var xG = 1.13*Math.exp(-0.27*spAdjDist);
+        } else {
+          var xG = 0.85*Math.exp(-0.13*spAdjDist);
+        }
+      }
+
+      //console.log("shot: " + shotAngle);
+      //console.log("std: " + stdAngle);
+      //console.log(relAngle);
+      console.log('xG: ', xG);
+
+      return [adjDist, xG];
+    }
+  }
+
+  function getSimpleXG(x, y, paramArray) {
+    var pitchX = (x-5)*68/380,
+        pitchY = (y-5)*52.5/280,
+        leftPostXY = [162.5*68/380, 0*52.5/280], // xy coords of the goal
+        rightPostXY = [207.5*68/380, 0*52.5/280],
+        centreGoalXY = [185*68/380, 0*52.5/280],
+        goalWidth = 45*68/380;
+
+    if (x < 5 | y <5 | x > 385 | y > 285) { // if shot is off the pitch
+      return 0;
+    } else {
+
+    if (x < 190) {
+
+      var distNearPost = Math.sqrt(Math.pow(pitchX - leftPostXY[0], 2) + Math.pow(pitchY - leftPostXY[1], 2)),
+          distFarPost = Math.sqrt(Math.pow(pitchX - rightPostXY[0], 2) + Math.pow(pitchY - rightPostXY[1], 2));
+
+    } else {
+
+        var distFarPost = Math.sqrt(Math.pow(pitchX - leftPostXY[0], 2) + Math.pow(pitchY - leftPostXY[1], 2)),
+            distNearPost = Math.sqrt(Math.pow(pitchX - rightPostXY[0], 2) + Math.pow(pitchY - rightPostXY[1], 2));
+
+      }
+
+        var goalAngle = Math.acos((Math.pow(distNearPost, 2) + Math.pow(distFarPost, 2) - Math.pow(goalWidth, 2))/(2*distNearPost*distFarPost)), // angle made by position of shot, and goalposts by cosine rule
+            goalDistance = Math.sqrt(Math.pow(centreGoalXY[0]-pitchX, 2) + Math.pow(centreGoalXY[1]-pitchY, 2)); // Distance to the centre of the goal
+
+      var isHeader = (paramArray[0] == "yes"),
+          xG = 1/(1+Math.exp(-(-1.745598 + 1.338737*goalAngle - 0.110384*goalDistance + 0.646730*isHeader + 0.168798*goalAngle*goalDistance - 0.424885*goalAngle*isHeader - 0.134178*goalDistance*isHeader - 0.055093*goalAngle*goalDistance*isHeader)));
+
+      console.table([
+        {name: "pitchX", value: pitchX},
+        {name: "pitchY", value: pitchY},
+        {name: "distNearPost", value: distNearPost},
+        {name: "distFarPost", value: distFarPost},
+        {name: "goalAngle", value: goalAngle},
+        {name: "goalDistance", value: goalDistance},
+      ])
+        //console.log('xG: ', xG);
+
+        return [goalAngle, xG];
+    }
+  }
+
+  function getXG(x, y, paramArray) {
+    var chosenModel = document.getElementById("model").value;
+
+    if (chosenModel == "caley") {
+      var xG = getCaleyXG(x, y, paramArray);
+    } else {
+      var xG = getSimpleXG(x, y, paramArray);
+    }
+
+    xG[1] = xG[1]*100; // Give xG as a percentage
+
+    return xG;
+  }
+
+  // Interactivity
+
+  function moveCircle(x, y, svg, paramArray) {
+
+    // Move circle
+    svg.select(".shot-circle")
+            .transition()
+            .attr("cx", x)
+            .attr("cy", y);
+
+    var isDribble = (paramArray[2] == "dribble"),
+        isCross = (paramArray[1] == "cross"),
+        isHeader = (paramArray[0] == "yes");
+
+    // Add dribble indicator
+    if (isDribble) {
+    svg.select(".dribble-line") // change so points towards goal?
+       .attr("x1", x)
+       .attr("y1", 300)
+       .attr("x2", x)
+       .attr("y2", 300);
+
+    svg.select(".dribble-line")
+       .transition()
+       .attr("x1", x)
+       .attr("y1", y+15)
+       .attr("x2", x)
+       .attr("y2", y-10)
+
+    } else {
+    svg.select(".dribble-line")
+       .transition()
+       .attr("y1", 380)
+       .attr("y2", 380);
+    }
+
+    if (isHeader) {
+      console.log("header")
+
+      svg.select(".shot-shadow")
+       .attr("cx", x)
+       .attr("cy", y)
+       .attr("r", 0);
+
+      svg.select(".shot-shadow")
+       .transition()
+       .attr("r", 7);
+    } else {
+      svg.select(".shot-shadow")
+       .transition()
+       .attr("r", 0);
+    }
+
+    if (isCross) {
+      svg.select(".cross-line")
+         .attr("x1", -10)
+         .attr("y1", y)
+         .attr("x2", -10)
+         .attr("y2", y);
+
+      svg.select(".cross-line")
+         .transition()
+         .attr("x1", x-55)
+         .attr("y1", y)
+         .attr("x2", x-15)
+         .attr("y2", y);
+
+      } else {
+      svg.select(".cross-line")
+         .transition()
+         .attr("x1", -10)
+         .attr("x2", -10);
+      }
+  }
+
+  function printXG(xG, svg) {
+    svg.select(".xG-text")
+      .text("xG: " + xG + "%")
+  }
+
+  /*------ curve chart -----
+  ------------------------*/
+
+  function createData() {
+    var x = createArray(0, 40),
+        yReg = 0.85*Math.exp(-0.13*x);
+
+  }
+
+  // Other functions
+
+  function createArray(minX, maxN) {
+    var len = maxN-minX,
+        x = new Array(len);
+    for(var i=0; i<=len; i++){
+      x[i] = i+minX;
+    }
+    return x;
+  }
+
+  /*-----------------------
+  ------------------------*/
+
+  pitchSvg.on('click', function() {
+
+    // update position
+    var coords = d3.mouse(this),
+        x = coords[0],
+        y = coords[1],
+        paramArray = getParams(),
+        xG = getXG(x, y, paramArray)[1].toFixed(0);
+    printXG(xG, pitchSvg);
+    moveCircle(x, y, pitchSvg, paramArray);
+  });
+
+  d3.selectAll(".param-select")
+    .on('change', function() {
+
+    // update position
+    var x = +d3.select(".shot-circle").attr("cx"),
+        y = +d3.select(".shot-circle").attr("cy"),
+        paramArray = getParams(),
+        xG = getXG(x, y, paramArray)[1].toFixed(0);
+    printXG(xG, pitchSvg);
+    moveCircle(x, y, pitchSvg, paramArray);
+  });
+
+})();
+
+  function checkParam(n) {
+    var idArray = ["header", "assist", "pre"],
+        paramArray = getParams();
+
+    var isDribble = (paramArray[2] == "dribble"),
+        isCross = (paramArray[1] == "cross"),
+        isHeader = (paramArray[0] == "yes");
+
+      if (n == 0) {
+        if (isHeader) {
+          document.getElementById("pre").value = "no";
+        }
+      } else if (n == 1) {
+        if (isCross) {
+          document.getElementById("pre").value = "no";
+        }
+      } else if (n == 2) {
+        if (isDribble) {
+          document.getElementById("header").value = "no";
+          document.getElementById("assist").value = "no";
+        }
+      }
+
+  };
+
+  function getParams() {
+  var idArray = ["header", "assist", "pre"],
+      paramArray = new Array(idArray.length);
+
+  for (var i=0; i<idArray.length; i++) {
+    paramArray[i] = document.getElementById(idArray[i]).value;
+  }
+
+  return paramArray;
+  };
+
+</script>
+</body>
+</html>

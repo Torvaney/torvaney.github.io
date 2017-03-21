@@ -1,0 +1,7 @@
+# build.sh
+
+# Elm guff
+elm-stuff
+
+# OS X guff
+.DS_Store
