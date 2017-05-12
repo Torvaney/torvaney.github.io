@@ -16,4 +16,5 @@ Some links:
 
 * [xG interactive](projects/xG.html)
 * [Soccer event logger](projects/tracker.html)
+* [Chaos game](projects/chaosgame.html)
 """

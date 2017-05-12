@@ -9706,7 +9706,7 @@ var _user$project$Types$Model = F2(
 var _user$project$Types$Projects = {ctor: 'Projects'};
 var _user$project$Types$About = {ctor: 'About'};
 
-var _user$project$Pages$projectText = '\nSome links:\n\n* [xG interactive](projects/xG.html)\n* [Soccer event logger](projects/tracker.html)\n';
+var _user$project$Pages$projectText = '\nSome links:\n\n* [xG interactive](projects/xG.html)\n* [Soccer event logger](projects/tracker.html)\n* [Chaos game](projects/chaosgame.html)\n';
 var _user$project$Pages$aboutText = '\nI am a data scientist based in London (UK).\n\nEmail: torvaney [at] protonmail.com\n';
 
 var _user$project$State$subscriptions = function (model) {

@@ -1,0 +1,23 @@
+<html>
+
+  <head>
+    <title>Torvaney | Event tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="../src/static/style/tracker.css">
+  </head>
+
+  <body>
+    <a class="btn btn-secondary" href="../index.html">Back</a>
+    <div id="elmApp" class="container"></div>
+  </body>
+
+  <script src="../src/static/js/chaosgame.js"></script>
+  <script>
+
+  // var app = Elm.Main.fullscreen();
+  var node = document.getElementById("elmApp");
+  var app = Elm.Main.embed(node);
+
+  </script>
+
+</html>
