@@ -7795,22 +7795,22 @@ var _elm_lang$html$Html$summary = _elm_lang$html$Html$node('summary');
 var _elm_lang$html$Html$menuitem = _elm_lang$html$Html$node('menuitem');
 var _elm_lang$html$Html$menu = _elm_lang$html$Html$node('menu');
 
-var _Torvaney$elm_soccer_tracker$Types$Coord = F2(
+var _Torvaney$elm_chaos_game$Types$Coord = F2(
 	function (a, b) {
 		return {x: a, y: b};
 	});
-var _Torvaney$elm_soccer_tracker$Types$Model = F4(
+var _Torvaney$elm_chaos_game$Types$Model = F4(
 	function (a, b, c, d) {
 		return {traceHistory: a, activeTrace: b, attractors: c, fraction: d};
 	});
-var _Torvaney$elm_soccer_tracker$Types$AddTrace = function (a) {
+var _Torvaney$elm_chaos_game$Types$AddTrace = function (a) {
 	return {ctor: 'AddTrace', _0: a};
 };
-var _Torvaney$elm_soccer_tracker$Types$Clear = {ctor: 'Clear'};
-var _Torvaney$elm_soccer_tracker$Types$NextN = function (a) {
+var _Torvaney$elm_chaos_game$Types$Clear = {ctor: 'Clear'};
+var _Torvaney$elm_chaos_game$Types$NextN = function (a) {
 	return {ctor: 'NextN', _0: a};
 };
-var _Torvaney$elm_soccer_tracker$Types$Next = {ctor: 'Next'};
+var _Torvaney$elm_chaos_game$Types$Next = {ctor: 'Next'};
 
 var _elm_lang$core$Task$onError = _elm_lang$core$Native_Scheduler.onError;
 var _elm_lang$core$Task$andThen = _elm_lang$core$Native_Scheduler.andThen;
@@ -8603,38 +8603,38 @@ var _elm_lang$core$Random$cmdMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Random'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Random$init, onEffects: _elm_lang$core$Random$onEffects, onSelfMsg: _elm_lang$core$Random$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Random$cmdMap};
 
-var _Torvaney$elm_soccer_tracker$State$subscriptions = function (model) {
+var _Torvaney$elm_chaos_game$State$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{ctor: '[]'});
 };
-var _Torvaney$elm_soccer_tracker$State$clearModel = function (model) {
+var _Torvaney$elm_chaos_game$State$clearModel = function (model) {
 	return _elm_lang$core$Native_Utils.update(
 		model,
 		{
 			traceHistory: {ctor: '[]'}
 		});
 };
-var _Torvaney$elm_soccer_tracker$State$midpoint = F3(
+var _Torvaney$elm_chaos_game$State$midpoint = F3(
 	function (fraction, p1, p2) {
 		var targetPoint = A2(_elm_lang$core$Maybe$withDefault, p1, p2);
 		return {x: (p1.x + targetPoint.x) * fraction, y: (p1.y + targetPoint.y) * fraction};
 	});
-var _Torvaney$elm_soccer_tracker$State$getTarget = F2(
+var _Torvaney$elm_chaos_game$State$getTarget = F2(
 	function (target, model) {
 		return A2(
 			_elm_lang$core$Array$get,
 			target,
 			_elm_lang$core$Array$fromList(model.attractors));
 	});
-var _Torvaney$elm_soccer_tracker$State$nextTrace = F2(
+var _Torvaney$elm_chaos_game$State$nextTrace = F2(
 	function (target, model) {
 		return A3(
-			_Torvaney$elm_soccer_tracker$State$midpoint,
+			_Torvaney$elm_chaos_game$State$midpoint,
 			model.fraction,
 			model.activeTrace,
-			A2(_Torvaney$elm_soccer_tracker$State$getTarget, target, model));
+			A2(_Torvaney$elm_chaos_game$State$getTarget, target, model));
 	});
-var _Torvaney$elm_soccer_tracker$State$addNextTrace = F2(
+var _Torvaney$elm_chaos_game$State$addNextTrace = F2(
 	function (target, model) {
 		return _elm_lang$core$Native_Utils.update(
 			model,
@@ -8647,19 +8647,19 @@ var _Torvaney$elm_soccer_tracker$State$addNextTrace = F2(
 						_0: model.activeTrace,
 						_1: {ctor: '[]'}
 					}),
-				activeTrace: A2(_Torvaney$elm_soccer_tracker$State$nextTrace, target, model)
+				activeTrace: A2(_Torvaney$elm_chaos_game$State$nextTrace, target, model)
 			});
 	});
-var _Torvaney$elm_soccer_tracker$State$sendTraceMsg = function (model) {
+var _Torvaney$elm_chaos_game$State$sendTraceMsg = function (model) {
 	return A2(
 		_elm_lang$core$Random$generate,
-		_Torvaney$elm_soccer_tracker$Types$AddTrace,
+		_Torvaney$elm_chaos_game$Types$AddTrace,
 		A2(
 			_elm_lang$core$Random$int,
 			0,
 			_elm_lang$core$List$length(model.attractors)));
 };
-var _Torvaney$elm_soccer_tracker$State$update = F2(
+var _Torvaney$elm_chaos_game$State$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		switch (_p0.ctor) {
@@ -8667,7 +8667,7 @@ var _Torvaney$elm_soccer_tracker$State$update = F2(
 				return {
 					ctor: '_Tuple2',
 					_0: model,
-					_1: _Torvaney$elm_soccer_tracker$State$sendTraceMsg(model)
+					_1: _Torvaney$elm_chaos_game$State$sendTraceMsg(model)
 				};
 			case 'NextN':
 				return {
@@ -8677,41 +8677,41 @@ var _Torvaney$elm_soccer_tracker$State$update = F2(
 						A2(
 							_elm_lang$core$List$repeat,
 							_p0._0,
-							_Torvaney$elm_soccer_tracker$State$sendTraceMsg(model)))
+							_Torvaney$elm_chaos_game$State$sendTraceMsg(model)))
 				};
 			case 'AddTrace':
 				return {
 					ctor: '_Tuple2',
-					_0: A2(_Torvaney$elm_soccer_tracker$State$addNextTrace, _p0._0, model),
+					_0: A2(_Torvaney$elm_chaos_game$State$addNextTrace, _p0._0, model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
 				return {
 					ctor: '_Tuple2',
-					_0: _Torvaney$elm_soccer_tracker$State$clearModel(model),
+					_0: _Torvaney$elm_chaos_game$State$clearModel(model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 		}
 	});
-var _Torvaney$elm_soccer_tracker$State$initModel = {
+var _Torvaney$elm_chaos_game$State$initModel = {
 	traceHistory: {ctor: '[]'},
-	activeTrace: A2(_Torvaney$elm_soccer_tracker$Types$Coord, 225, 125),
+	activeTrace: A2(_Torvaney$elm_chaos_game$Types$Coord, 225, 125),
 	attractors: {
 		ctor: '::',
-		_0: A2(_Torvaney$elm_soccer_tracker$Types$Coord, 50, 300),
+		_0: A2(_Torvaney$elm_chaos_game$Types$Coord, 50, 300),
 		_1: {
 			ctor: '::',
-			_0: A2(_Torvaney$elm_soccer_tracker$Types$Coord, 225, 50),
+			_0: A2(_Torvaney$elm_chaos_game$Types$Coord, 225, 50),
 			_1: {
 				ctor: '::',
-				_0: A2(_Torvaney$elm_soccer_tracker$Types$Coord, 400, 300),
+				_0: A2(_Torvaney$elm_chaos_game$Types$Coord, 400, 300),
 				_1: {ctor: '[]'}
 			}
 		}
 	},
 	fraction: 0.5
 };
-var _Torvaney$elm_soccer_tracker$State$init = {ctor: '_Tuple2', _0: _Torvaney$elm_soccer_tracker$State$initModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _Torvaney$elm_chaos_game$State$init = {ctor: '_Tuple2', _0: _Torvaney$elm_chaos_game$State$initModel, _1: _elm_lang$core$Platform_Cmd$none};
 
 var _elm_lang$html$Html_Attributes$map = _elm_lang$virtual_dom$VirtualDom$mapProperty;
 var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
@@ -9659,10 +9659,10 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _Torvaney$elm_soccer_tracker$View$appendixText = '\n';
-var _Torvaney$elm_soccer_tracker$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circle) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n';
-var _Torvaney$elm_soccer_tracker$View$headerText = 'Chaos game';
-var _Torvaney$elm_soccer_tracker$View$divN = function (n) {
+var _Torvaney$elm_chaos_game$View$appendixText = '\nSource code [on github](https://torvaney.github.io/projects/chaosgame).\n';
+var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circle) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n';
+var _Torvaney$elm_chaos_game$View$headerText = 'Chaos game';
+var _Torvaney$elm_chaos_game$View$divN = function (n) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9676,7 +9676,7 @@ var _Torvaney$elm_soccer_tracker$View$divN = function (n) {
 		},
 		{ctor: '[]'});
 };
-var _Torvaney$elm_soccer_tracker$View$drawCircle = F4(
+var _Torvaney$elm_chaos_game$View$drawCircle = F4(
 	function (fillColour, radius, alpha, point) {
 		return A2(
 			_elm_lang$svg$Svg$circle,
@@ -9711,10 +9711,10 @@ var _Torvaney$elm_soccer_tracker$View$drawCircle = F4(
 			},
 			{ctor: '[]'});
 	});
-var _Torvaney$elm_soccer_tracker$View$drawActiveTrace = A3(_Torvaney$elm_soccer_tracker$View$drawCircle, '#fade48', 3, 1.0);
-var _Torvaney$elm_soccer_tracker$View$drawTrace = A3(_Torvaney$elm_soccer_tracker$View$drawCircle, '#224593', 1, 0.2);
-var _Torvaney$elm_soccer_tracker$View$drawAttractor = A3(_Torvaney$elm_soccer_tracker$View$drawCircle, '#224593', 9, 1.0);
-var _Torvaney$elm_soccer_tracker$View$drawCanvas = function (model) {
+var _Torvaney$elm_chaos_game$View$drawActiveTrace = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#fade48', 3, 1.0);
+var _Torvaney$elm_chaos_game$View$drawTrace = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 1, 0.2);
+var _Torvaney$elm_chaos_game$View$drawAttractor = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 9, 1.0);
+var _Torvaney$elm_chaos_game$View$drawCanvas = function (model) {
 	return A2(
 		_elm_lang$svg$Svg$svg,
 		{
@@ -9732,17 +9732,17 @@ var _Torvaney$elm_soccer_tracker$View$drawCanvas = function (model) {
 		},
 		A2(
 			_elm_lang$core$Basics_ops['++'],
-			A2(_elm_lang$core$List$map, _Torvaney$elm_soccer_tracker$View$drawTrace, model.traceHistory),
+			A2(_elm_lang$core$List$map, _Torvaney$elm_chaos_game$View$drawTrace, model.traceHistory),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
-				A2(_elm_lang$core$List$map, _Torvaney$elm_soccer_tracker$View$drawAttractor, model.attractors),
+				A2(_elm_lang$core$List$map, _Torvaney$elm_chaos_game$View$drawAttractor, model.attractors),
 				{
 					ctor: '::',
-					_0: _Torvaney$elm_soccer_tracker$View$drawActiveTrace(model.activeTrace),
+					_0: _Torvaney$elm_chaos_game$View$drawActiveTrace(model.activeTrace),
 					_1: {ctor: '[]'}
 				})));
 };
-var _Torvaney$elm_soccer_tracker$View$view = function (model) {
+var _Torvaney$elm_chaos_game$View$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
 		{
@@ -9752,7 +9752,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: _Torvaney$elm_soccer_tracker$View$divN(1),
+			_0: _Torvaney$elm_chaos_game$View$divN(1),
 			_1: {
 				ctor: '::',
 				_0: A2(
@@ -9773,7 +9773,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(_Torvaney$elm_soccer_tracker$View$headerText),
+								_0: _elm_lang$html$Html$text(_Torvaney$elm_chaos_game$View$headerText),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -9785,7 +9785,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 									_0: _elm_lang$html$Html_Attributes$class('text-left'),
 									_1: {ctor: '[]'}
 								},
-								_Torvaney$elm_soccer_tracker$View$introText),
+								_Torvaney$elm_chaos_game$View$introText),
 							_1: {
 								ctor: '::',
 								_0: A2(
@@ -9825,7 +9825,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 																	_0: _elm_lang$html$Html_Attributes$href('#!'),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onClick(_Torvaney$elm_soccer_tracker$Types$Next),
+																		_0: _elm_lang$html$Html_Events$onClick(_Torvaney$elm_chaos_game$Types$Next),
 																		_1: {ctor: '[]'}
 																	}
 																}
@@ -9848,7 +9848,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 																		_1: {
 																			ctor: '::',
 																			_0: _elm_lang$html$Html_Events$onClick(
-																				_Torvaney$elm_soccer_tracker$Types$NextN(10)),
+																				_Torvaney$elm_chaos_game$Types$NextN(10)),
 																			_1: {ctor: '[]'}
 																		}
 																	}
@@ -9871,7 +9871,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 																			_1: {
 																				ctor: '::',
 																				_0: _elm_lang$html$Html_Events$onClick(
-																					_Torvaney$elm_soccer_tracker$Types$NextN(100)),
+																					_Torvaney$elm_chaos_game$Types$NextN(100)),
 																				_1: {ctor: '[]'}
 																			}
 																		}
@@ -9906,7 +9906,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 																		_0: _elm_lang$html$Html_Attributes$href('#!'),
 																		_1: {
 																			ctor: '::',
-																			_0: _elm_lang$html$Html_Events$onClick(_Torvaney$elm_soccer_tracker$Types$Clear),
+																			_0: _elm_lang$html$Html_Events$onClick(_Torvaney$elm_chaos_game$Types$Clear),
 																			_1: {ctor: '[]'}
 																		}
 																	}
@@ -9925,7 +9925,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 									}),
 								_1: {
 									ctor: '::',
-									_0: _Torvaney$elm_soccer_tracker$View$drawCanvas(model),
+									_0: _Torvaney$elm_chaos_game$View$drawCanvas(model),
 									_1: {
 										ctor: '::',
 										_0: A2(
@@ -9941,7 +9941,7 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 													_0: _elm_lang$html$Html_Attributes$class('text-left'),
 													_1: {ctor: '[]'}
 												},
-												_Torvaney$elm_soccer_tracker$View$appendixText),
+												_Torvaney$elm_chaos_game$View$appendixText),
 											_1: {ctor: '[]'}
 										}
 									}
@@ -9951,20 +9951,20 @@ var _Torvaney$elm_soccer_tracker$View$view = function (model) {
 					}),
 				_1: {
 					ctor: '::',
-					_0: _Torvaney$elm_soccer_tracker$View$divN(1),
+					_0: _Torvaney$elm_chaos_game$View$divN(1),
 					_1: {ctor: '[]'}
 				}
 			}
 		});
 };
 
-var _Torvaney$elm_soccer_tracker$Main$main = _elm_lang$html$Html$program(
-	{init: _Torvaney$elm_soccer_tracker$State$init, view: _Torvaney$elm_soccer_tracker$View$view, update: _Torvaney$elm_soccer_tracker$State$update, subscriptions: _Torvaney$elm_soccer_tracker$State$subscriptions})();
+var _Torvaney$elm_chaos_game$Main$main = _elm_lang$html$Html$program(
+	{init: _Torvaney$elm_chaos_game$State$init, view: _Torvaney$elm_chaos_game$View$view, update: _Torvaney$elm_chaos_game$State$update, subscriptions: _Torvaney$elm_chaos_game$State$subscriptions})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
-if (typeof _Torvaney$elm_soccer_tracker$Main$main !== 'undefined') {
-    _Torvaney$elm_soccer_tracker$Main$main(Elm['Main'], 'Main', undefined);
+if (typeof _Torvaney$elm_chaos_game$Main$main !== 'undefined') {
+    _Torvaney$elm_chaos_game$Main$main(Elm['Main'], 'Main', undefined);
 }
 
 if (typeof define === "function" && define['amd'])
