@@ -9685,11 +9685,11 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _Torvaney$elm_chaos_game$View$appendixText = '\nSource code [on github](https://torvaney.github.io/projects/chaosgame).\n';
-var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circle) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n';
+var _Torvaney$elm_chaos_game$View$appendixText = '\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n\nSource code [on github](https://torvaney.github.io/projects/chaosgame).\n';
+var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circles) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nYou can also vary the number of target points with the slider at the bottom.\n';
 var _Torvaney$elm_chaos_game$View$headerText = 'Chaos game';
-var _Torvaney$elm_chaos_game$View$drawCircle = F4(
-	function (fillColour, radius, alpha, point) {
+var _Torvaney$elm_chaos_game$View$drawCircle = F5(
+	function (fillColour, strokeColour, radius, alpha, point) {
 		return A2(
 			_elm_lang$svg$Svg$circle,
 			{
@@ -9713,7 +9713,7 @@ var _Torvaney$elm_chaos_game$View$drawCircle = F4(
 									_elm_lang$core$Basics$toString(alpha)),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$svg$Svg_Attributes$stroke('black'),
+									_0: _elm_lang$svg$Svg_Attributes$stroke(strokeColour),
 									_1: {ctor: '[]'}
 								}
 							}
@@ -9723,9 +9723,9 @@ var _Torvaney$elm_chaos_game$View$drawCircle = F4(
 			},
 			{ctor: '[]'});
 	});
-var _Torvaney$elm_chaos_game$View$drawActiveTrace = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#fade48', 3, 1.0);
-var _Torvaney$elm_chaos_game$View$drawTrace = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 1, 0.2);
-var _Torvaney$elm_chaos_game$View$drawAttractor = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 9, 1.0);
+var _Torvaney$elm_chaos_game$View$drawActiveTrace = A4(_Torvaney$elm_chaos_game$View$drawCircle, '#45ccfe', '#224593', 4, 1.0);
+var _Torvaney$elm_chaos_game$View$drawTrace = A4(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 'none', 1, 0.6);
+var _Torvaney$elm_chaos_game$View$drawAttractor = A4(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', '#10224b', 9, 1.0);
 var _Torvaney$elm_chaos_game$View$nSlider = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -9948,14 +9948,14 @@ var _Torvaney$elm_chaos_game$View$view = function (model) {
 																		_1: {
 																			ctor: '::',
 																			_0: _elm_lang$html$Html_Events$onClick(
-																				_Torvaney$elm_chaos_game$Types$NextN(10)),
+																				_Torvaney$elm_chaos_game$Types$NextN(25)),
 																			_1: {ctor: '[]'}
 																		}
 																	}
 																},
 																{
 																	ctor: '::',
-																	_0: _elm_lang$html$Html$text('Next 10'),
+																	_0: _elm_lang$html$Html$text('Next 25'),
 																	_1: {ctor: '[]'}
 																}),
 															_1: {
@@ -9971,14 +9971,14 @@ var _Torvaney$elm_chaos_game$View$view = function (model) {
 																			_1: {
 																				ctor: '::',
 																				_0: _elm_lang$html$Html_Events$onClick(
-																					_Torvaney$elm_chaos_game$Types$NextN(100)),
+																					_Torvaney$elm_chaos_game$Types$NextN(250)),
 																				_1: {ctor: '[]'}
 																			}
 																		}
 																	},
 																	{
 																		ctor: '::',
-																		_0: _elm_lang$html$Html$text('Next 100'),
+																		_0: _elm_lang$html$Html$text('Next 250'),
 																		_1: {ctor: '[]'}
 																	}),
 																_1: {ctor: '[]'}
