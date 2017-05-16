@@ -7801,12 +7801,15 @@ var _Torvaney$elm_chaos_game$Types$Coord = F2(
 	});
 var _Torvaney$elm_chaos_game$Types$Model = F4(
 	function (a, b, c, d) {
-		return {traceHistory: a, activeTrace: b, attractors: c, fraction: d};
+		return {traceHistory: a, activeTrace: b, nAttractors: c, fraction: d};
 	});
+var _Torvaney$elm_chaos_game$Types$Clear = {ctor: 'Clear'};
+var _Torvaney$elm_chaos_game$Types$NumAttractors = function (a) {
+	return {ctor: 'NumAttractors', _0: a};
+};
 var _Torvaney$elm_chaos_game$Types$AddTrace = function (a) {
 	return {ctor: 'AddTrace', _0: a};
 };
-var _Torvaney$elm_chaos_game$Types$Clear = {ctor: 'Clear'};
 var _Torvaney$elm_chaos_game$Types$NextN = function (a) {
 	return {ctor: 'NextN', _0: a};
 };
@@ -8607,6 +8610,14 @@ var _Torvaney$elm_chaos_game$State$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$batch(
 		{ctor: '[]'});
 };
+var _Torvaney$elm_chaos_game$State$nthCoord = F4(
+	function (origin, rad, angle, n) {
+		var nF = _elm_lang$core$Basics$toFloat(n);
+		return {
+			x: origin.x + (rad * _elm_lang$core$Basics$sin(nF * angle)),
+			y: origin.y + (rad * _elm_lang$core$Basics$cos(nF * angle))
+		};
+	});
 var _Torvaney$elm_chaos_game$State$clearModel = function (model) {
 	return _elm_lang$core$Native_Utils.update(
 		model,
@@ -8619,12 +8630,35 @@ var _Torvaney$elm_chaos_game$State$midpoint = F3(
 		var targetPoint = A2(_elm_lang$core$Maybe$withDefault, p1, p2);
 		return {x: (p1.x + targetPoint.x) * fraction, y: (p1.y + targetPoint.y) * fraction};
 	});
+var _Torvaney$elm_chaos_game$State$initRad = -150;
+var _Torvaney$elm_chaos_game$State$initOrigin = A2(_Torvaney$elm_chaos_game$Types$Coord, 250, 200);
+var _Torvaney$elm_chaos_game$State$getAttractors = function (model) {
+	var angle = (2 * _elm_lang$core$Basics$pi) / _elm_lang$core$Basics$toFloat(model.nAttractors);
+	return A2(
+		_elm_lang$core$List$map,
+		A3(_Torvaney$elm_chaos_game$State$nthCoord, _Torvaney$elm_chaos_game$State$initOrigin, _Torvaney$elm_chaos_game$State$initRad, angle),
+		A2(_elm_lang$core$List$range, 0, model.nAttractors));
+};
+var _Torvaney$elm_chaos_game$State$sendTraceMsg = function (model) {
+	return A2(
+		_elm_lang$core$Random$generate,
+		_Torvaney$elm_chaos_game$Types$AddTrace,
+		A2(
+			_elm_lang$core$Random$int,
+			0,
+			function (a) {
+				return a - 1;
+			}(
+				_elm_lang$core$List$length(
+					_Torvaney$elm_chaos_game$State$getAttractors(model)))));
+};
 var _Torvaney$elm_chaos_game$State$getTarget = F2(
 	function (target, model) {
 		return A2(
 			_elm_lang$core$Array$get,
 			target,
-			_elm_lang$core$Array$fromList(model.attractors));
+			_elm_lang$core$Array$fromList(
+				_Torvaney$elm_chaos_game$State$getAttractors(model)));
 	});
 var _Torvaney$elm_chaos_game$State$nextTrace = F2(
 	function (target, model) {
@@ -8650,15 +8684,6 @@ var _Torvaney$elm_chaos_game$State$addNextTrace = F2(
 				activeTrace: A2(_Torvaney$elm_chaos_game$State$nextTrace, target, model)
 			});
 	});
-var _Torvaney$elm_chaos_game$State$sendTraceMsg = function (model) {
-	return A2(
-		_elm_lang$core$Random$generate,
-		_Torvaney$elm_chaos_game$Types$AddTrace,
-		A2(
-			_elm_lang$core$Random$int,
-			0,
-			_elm_lang$core$List$length(model.attractors)));
-};
 var _Torvaney$elm_chaos_game$State$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
@@ -8685,6 +8710,19 @@ var _Torvaney$elm_chaos_game$State$update = F2(
 					_0: A2(_Torvaney$elm_chaos_game$State$addNextTrace, _p0._0, model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'NumAttractors':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							nAttractors: A2(
+								_elm_lang$core$Result$withDefault,
+								3,
+								_elm_lang$core$String$toInt(_p0._0))
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			default:
 				return {
 					ctor: '_Tuple2',
@@ -8695,20 +8733,8 @@ var _Torvaney$elm_chaos_game$State$update = F2(
 	});
 var _Torvaney$elm_chaos_game$State$initModel = {
 	traceHistory: {ctor: '[]'},
-	activeTrace: A2(_Torvaney$elm_chaos_game$Types$Coord, 225, 125),
-	attractors: {
-		ctor: '::',
-		_0: A2(_Torvaney$elm_chaos_game$Types$Coord, 50, 300),
-		_1: {
-			ctor: '::',
-			_0: A2(_Torvaney$elm_chaos_game$Types$Coord, 225, 50),
-			_1: {
-				ctor: '::',
-				_0: A2(_Torvaney$elm_chaos_game$Types$Coord, 400, 300),
-				_1: {ctor: '[]'}
-			}
-		}
-	},
+	activeTrace: _Torvaney$elm_chaos_game$State$initOrigin,
+	nAttractors: 3,
 	fraction: 0.5
 };
 var _Torvaney$elm_chaos_game$State$init = {ctor: '_Tuple2', _0: _Torvaney$elm_chaos_game$State$initModel, _1: _elm_lang$core$Platform_Cmd$none};
@@ -9662,20 +9688,6 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 var _Torvaney$elm_chaos_game$View$appendixText = '\nSource code [on github](https://torvaney.github.io/projects/chaosgame).\n';
 var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circle) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n';
 var _Torvaney$elm_chaos_game$View$headerText = 'Chaos game';
-var _Torvaney$elm_chaos_game$View$divN = function (n) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					'col-md-',
-					_elm_lang$core$Basics$toString(n))),
-			_1: {ctor: '[]'}
-		},
-		{ctor: '[]'});
-};
 var _Torvaney$elm_chaos_game$View$drawCircle = F4(
 	function (fillColour, radius, alpha, point) {
 		return A2(
@@ -9714,6 +9726,91 @@ var _Torvaney$elm_chaos_game$View$drawCircle = F4(
 var _Torvaney$elm_chaos_game$View$drawActiveTrace = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#fade48', 3, 1.0);
 var _Torvaney$elm_chaos_game$View$drawTrace = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 1, 0.2);
 var _Torvaney$elm_chaos_game$View$drawAttractor = A3(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 9, 1.0);
+var _Torvaney$elm_chaos_game$View$nSlider = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('Number of attractors'),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$br,
+					{ctor: '[]'},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$type_('range'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$min(
+									_elm_lang$core$Basics$toString(3)),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$max(
+										_elm_lang$core$Basics$toString(12)),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$step(
+											_elm_lang$core$Basics$toString(1)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$value(
+												_elm_lang$core$Basics$toString(model.nAttractors)),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(_Torvaney$elm_chaos_game$Types$NumAttractors),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(model.nAttractors)),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$br,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		});
+};
+var _Torvaney$elm_chaos_game$View$divN = function (n) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'col-md-',
+					_elm_lang$core$Basics$toString(n))),
+			_1: {ctor: '[]'}
+		},
+		{ctor: '[]'});
+};
 var _Torvaney$elm_chaos_game$View$drawCanvas = function (model) {
 	return A2(
 		_elm_lang$svg$Svg$svg,
@@ -9722,7 +9819,7 @@ var _Torvaney$elm_chaos_game$View$drawCanvas = function (model) {
 			_0: _elm_lang$html$Html_Attributes$width(500),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$height(500),
+				_0: _elm_lang$html$Html_Attributes$height(400),
 				_1: {
 					ctor: '::',
 					_0: _elm_lang$html$Html_Attributes$id('pitchSvg'),
@@ -9735,7 +9832,10 @@ var _Torvaney$elm_chaos_game$View$drawCanvas = function (model) {
 			A2(_elm_lang$core$List$map, _Torvaney$elm_chaos_game$View$drawTrace, model.traceHistory),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
-				A2(_elm_lang$core$List$map, _Torvaney$elm_chaos_game$View$drawAttractor, model.attractors),
+				A2(
+					_elm_lang$core$List$map,
+					_Torvaney$elm_chaos_game$View$drawAttractor,
+					_Torvaney$elm_chaos_game$State$getAttractors(model)),
 				{
 					ctor: '::',
 					_0: _Torvaney$elm_chaos_game$View$drawActiveTrace(model.activeTrace),
@@ -9934,15 +10034,19 @@ var _Torvaney$elm_chaos_game$View$view = function (model) {
 											{ctor: '[]'}),
 										_1: {
 											ctor: '::',
-											_0: A2(
-												_evancz$elm_markdown$Markdown$toHtml,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$class('text-left'),
-													_1: {ctor: '[]'}
-												},
-												_Torvaney$elm_chaos_game$View$appendixText),
-											_1: {ctor: '[]'}
+											_0: _Torvaney$elm_chaos_game$View$nSlider(model),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_evancz$elm_markdown$Markdown$toHtml,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('text-left'),
+														_1: {ctor: '[]'}
+													},
+													_Torvaney$elm_chaos_game$View$appendixText),
+												_1: {ctor: '[]'}
+											}
 										}
 									}
 								}
