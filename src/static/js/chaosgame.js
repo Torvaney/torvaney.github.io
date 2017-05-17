@@ -9686,7 +9686,7 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 		return {githubFlavored: a, defaultHighlighting: b, sanitize: c, smartypants: d};
 	});
 
-var _Torvaney$elm_chaos_game$View$appendixText = '\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n\nSource code [on github](https://torvaney.github.io/projects/chaosgame).\n';
+var _Torvaney$elm_chaos_game$View$appendixText = '\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n\nSource code [on github](https://github.com/Torvaney/elm-chaos-game).\n';
 var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circles) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nYou can also vary the number of target points with the slider at the bottom.\n';
 var _Torvaney$elm_chaos_game$View$headerText = 'Chaos game';
 var _Torvaney$elm_chaos_game$View$drawCircle = F5(
