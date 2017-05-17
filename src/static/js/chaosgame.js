@@ -7804,6 +7804,9 @@ var _Torvaney$elm_chaos_game$Types$Model = F4(
 		return {traceHistory: a, activeTrace: b, nAttractors: c, fraction: d};
 	});
 var _Torvaney$elm_chaos_game$Types$Clear = {ctor: 'Clear'};
+var _Torvaney$elm_chaos_game$Types$ChangeFraction = function (a) {
+	return {ctor: 'ChangeFraction', _0: a};
+};
 var _Torvaney$elm_chaos_game$Types$NumAttractors = function (a) {
 	return {ctor: 'NumAttractors', _0: a};
 };
@@ -8628,7 +8631,7 @@ var _Torvaney$elm_chaos_game$State$clearModel = function (model) {
 var _Torvaney$elm_chaos_game$State$midpoint = F3(
 	function (fraction, p1, p2) {
 		var targetPoint = A2(_elm_lang$core$Maybe$withDefault, p1, p2);
-		return {x: (p1.x + targetPoint.x) * fraction, y: (p1.y + targetPoint.y) * fraction};
+		return {x: (fraction * p1.x) + ((1 - fraction) * targetPoint.x), y: (fraction * p1.y) + ((1 - fraction) * targetPoint.y)};
 	});
 var _Torvaney$elm_chaos_game$State$initRad = -150;
 var _Torvaney$elm_chaos_game$State$initOrigin = A2(_Torvaney$elm_chaos_game$Types$Coord, 250, 200);
@@ -8721,6 +8724,20 @@ var _Torvaney$elm_chaos_game$State$update = F2(
 									_elm_lang$core$Result$withDefault,
 									3,
 									_elm_lang$core$String$toInt(_p0._0))
+							})),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ChangeFraction':
+				return {
+					ctor: '_Tuple2',
+					_0: _Torvaney$elm_chaos_game$State$clearModel(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								fraction: A2(
+									_elm_lang$core$Result$withDefault,
+									0.5,
+									_elm_lang$core$String$toFloat(_p0._0))
 							})),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -9687,7 +9704,7 @@ var _evancz$elm_markdown$Markdown$Options = F4(
 	});
 
 var _Torvaney$elm_chaos_game$View$appendixText = '\nInspired by [Numberphile](https://www.youtube.com/watch?v=kbKtFN71Lfs).\n\nSource code [on github](https://github.com/Torvaney/elm-chaos-game).\n';
-var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circles) at random\n  2. Go halfway between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nYou can also vary the number of target points with the slider at the bottom.\n';
+var _Torvaney$elm_chaos_game$View$introText = '\nThe algorithm goes like this:\n  1. Pick a target point (large circles) at random\n  2. Go a fraction of the way between the current position and the target position\n  3. Mark the new point (small circle)\n  4. Repeat from `1`\n\nDo you see a pattern emerge?\n\nYou can vary both the number of target points and the fraction traversed\nwith the slider at the bottom.\n';
 var _Torvaney$elm_chaos_game$View$headerText = 'Chaos game';
 var _Torvaney$elm_chaos_game$View$drawCircle = F5(
 	function (fillColour, strokeColour, radius, alpha, point) {
@@ -9727,6 +9744,77 @@ var _Torvaney$elm_chaos_game$View$drawCircle = F5(
 var _Torvaney$elm_chaos_game$View$drawActiveTrace = A4(_Torvaney$elm_chaos_game$View$drawCircle, '#45ccfe', '#224593', 4, 1.0);
 var _Torvaney$elm_chaos_game$View$drawTrace = A4(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', 'none', 1, 0.6);
 var _Torvaney$elm_chaos_game$View$drawAttractor = A4(_Torvaney$elm_chaos_game$View$drawCircle, '#224593', '#10224b', 9, 1.0);
+var _Torvaney$elm_chaos_game$View$fractionSlider = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('Trace fraction'),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$br,
+					{ctor: '[]'},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$type_('range'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$min(
+									_elm_lang$core$Basics$toString(0)),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$max(
+										_elm_lang$core$Basics$toString(1)),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$step(
+											_elm_lang$core$Basics$toString(5.0e-2)),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$value(
+												_elm_lang$core$Basics$toString(model.fraction)),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onInput(_Torvaney$elm_chaos_game$Types$ChangeFraction),
+												_1: {ctor: '[]'}
+											}
+										}
+									}
+								}
+							}
+						},
+						{ctor: '[]'}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(
+								_elm_lang$core$Basics$toString(model.fraction)),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$br,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		});
+};
 var _Torvaney$elm_chaos_game$View$nSlider = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -10038,15 +10126,19 @@ var _Torvaney$elm_chaos_game$View$view = function (model) {
 											_0: _Torvaney$elm_chaos_game$View$nSlider(model),
 											_1: {
 												ctor: '::',
-												_0: A2(
-													_evancz$elm_markdown$Markdown$toHtml,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$class('text-left'),
-														_1: {ctor: '[]'}
-													},
-													_Torvaney$elm_chaos_game$View$appendixText),
-												_1: {ctor: '[]'}
+												_0: _Torvaney$elm_chaos_game$View$fractionSlider(model),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_evancz$elm_markdown$Markdown$toHtml,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('text-left'),
+															_1: {ctor: '[]'}
+														},
+														_Torvaney$elm_chaos_game$View$appendixText),
+													_1: {ctor: '[]'}
+												}
 											}
 										}
 									}
