@@ -8713,14 +8713,15 @@ var _Torvaney$elm_chaos_game$State$update = F2(
 			case 'NumAttractors':
 				return {
 					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							nAttractors: A2(
-								_elm_lang$core$Result$withDefault,
-								3,
-								_elm_lang$core$String$toInt(_p0._0))
-						}),
+					_0: _Torvaney$elm_chaos_game$State$clearModel(
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								nAttractors: A2(
+									_elm_lang$core$Result$withDefault,
+									3,
+									_elm_lang$core$String$toInt(_p0._0))
+							})),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
