@@ -10607,6 +10607,7 @@ var _user$project$State$update = F2(
 		}
 	});
 
+var _user$project$View$appendixText = '\nCode lives here: https://github.com/Torvaney/wolf-and-hare\n';
 var _user$project$View$introText = '\nA 2 player version of the game outlined\n[here](http://www.ucl.ac.uk/~uctpmw0/HaseWolf/hw_main.html)\n by Martin Weidner.\n\n## The rules\n * Players take turns to move.\n * The Wolf (red) can move one of its three pieces diagonally and forwards.\n * The Hare (blue) can move diagonally in all directions.\n * Players cannot move into a space alrady occupied by another piece.\n * The goal of the Hare is to reach the bottom of the board.\n * The goal of the Wolves is to trap the Hare so that it cannot make any moves.\n\nThe game comes with an additional twist: the player starting the game cannot win unless the opponent makes a mistake...\n';
 var _user$project$View$headerText = 'Wolf and Hare';
 var _user$project$View$isHare = function (player) {
@@ -10787,7 +10788,7 @@ var _user$project$View$toColorCode = function (square) {
 			return _user$project$View$isEven(square.x + square.y) ? '#525252' : '#dddddd';
 	}
 };
-var _user$project$View$squareSize = 45;
+var _user$project$View$squareSize = 40;
 var _user$project$View$drawBlank = function (square) {
 	return {
 		ctor: '::',
@@ -11150,7 +11151,18 @@ var _user$project$View$view = function (model) {
 											}),
 										_1: {ctor: '[]'}
 									}),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_evancz$elm_markdown$Markdown$toHtml,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('text-left'),
+											_1: {ctor: '[]'}
+										},
+										_user$project$View$appendixText),
+									_1: {ctor: '[]'}
+								}
 							}
 						}
 					}),
