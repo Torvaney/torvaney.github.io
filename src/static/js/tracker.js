@@ -10759,10 +10759,7 @@ var _Torvaney$elm_soccer_tracker$State$createEvent = F2(
 		return {
 			x: position.x,
 			y: position.y,
-			mod1: A2(
-				_elm_lang$core$Debug$log,
-				'mod1',
-				A2(_Torvaney$elm_soccer_tracker$State$isPressed, model, _Torvaney$elm_soccer_tracker$Types$Mod1)),
+			mod1: A2(_Torvaney$elm_soccer_tracker$State$isPressed, model, _Torvaney$elm_soccer_tracker$Types$Mod1),
 			mod2: A2(_Torvaney$elm_soccer_tracker$State$isPressed, model, _Torvaney$elm_soccer_tracker$Types$Mod2),
 			mod3: A2(_Torvaney$elm_soccer_tracker$State$isPressed, model, _Torvaney$elm_soccer_tracker$Types$Mod3)
 		};
