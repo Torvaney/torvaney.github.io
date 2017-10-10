@@ -1,4 +1,4 @@
-module State exposing (about, update, subscriptions)
+module State exposing (init, update, subscriptions)
 
 import Types exposing (..)
 import Pages exposing (..)
@@ -6,7 +6,7 @@ import Pages exposing (..)
 
 -- INIT
 
-about = Model "About" aboutText
+init = Model "Projects" projectText
 
 
 -- UPDATE
@@ -15,7 +15,7 @@ update : Msg -> Model -> Model
 update msg model =
   case msg of
     About ->
-      about
+      Model "About" aboutText
     Projects ->
       Model "Projects" projectText
 

@@ -9712,16 +9712,16 @@ var _user$project$Pages$aboutText = '\nI am a data scientist based in London (UK
 var _user$project$State$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _user$project$State$about = A2(_user$project$Types$Model, 'About', _user$project$Pages$aboutText);
 var _user$project$State$update = F2(
 	function (msg, model) {
 		var _p0 = msg;
 		if (_p0.ctor === 'About') {
-			return _user$project$State$about;
+			return A2(_user$project$Types$Model, 'About', _user$project$Pages$aboutText);
 		} else {
 			return A2(_user$project$Types$Model, 'Projects', _user$project$Pages$projectText);
 		}
 	});
+var _user$project$State$init = A2(_user$project$Types$Model, 'Projects', _user$project$Pages$projectText);
 
 var _user$project$View$divColN = function (n) {
 	return _elm_lang$html$Html$div(
@@ -9955,7 +9955,7 @@ var _user$project$View$view = function (model) {
 };
 
 var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
-	{model: _user$project$State$about, view: _user$project$View$view, update: _user$project$State$update})();
+	{model: _user$project$State$init, view: _user$project$View$view, update: _user$project$State$update})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
