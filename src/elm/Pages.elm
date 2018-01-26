@@ -18,5 +18,7 @@ Some links:
 * [Soccer event logger](projects/tracker.html)
 * [Chaos game](projects/chaosgame.html)
 * [Wolf and Hare](projects/wolf-and-hare.html)
+* [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
+* [XGEEFAX](https://twitter.com/XGEEFAX)
 * [FPL optimiser twitter bot](https://twitter.com/fpl_optimiser)
 """
