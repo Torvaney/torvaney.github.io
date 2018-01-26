@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>The messenger and the army</title>
+  <meta name="description" content="TODO">
+  <meta name="author" content="TODO">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="../src/static/style/joy.css">
+  <link rel="stylesheet" href="../src/static/style/messenger-army-puzzle.css">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<h1>The messenger and the army</h1>
+				<p>
+					This explorable riddle won't get you an exact answer,
+					but it will (hopefully) allow you to explore the problem
+					in a different way:
+				</p>
+				<div id="joy"></div>
+				<div id="box"></div>
+				<p> Built using Nicky Case's <a href="http://ncase.me/joy/">joy.js</a>.</p>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+	</div>
+  <script src="../src/static/js/joy.min.js"></script>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="../src/static/js/messenger-army-puzzle.js"></script>
+  <style> /* set the CSS */
+  #player{
+  	font-size: 12px;
+  }
+  #editor{
+  	font-size: 18px;
+  	line-height: 1.7em;
+  }
+  g.line{}
+  g.line > path{
+      stroke: #000;
+      stroke-width: 5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+  }
+  g.line > path.small{
+  	stroke: #ccc;
+  	stroke-width: 1;
+  }
+  g.line > text{
+  	stroke: none;
+  	fill: #ccc;
+  }
+  text.axis-label{
+  	font-size: 15px;
+  	font-weight: bold;
+  }
+  rect.zero{
+  	fill: rgba(0,0,0,0.08);
+  }
+  .axis path,
+  .axis line {
+      fill: none;
+      stroke: grey;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+  }
+
+	path.army {
+			stroke: grey;
+			stroke-width: 1;
+	}
+	path.messenger {
+			stroke: steelblue;
+			stroke-width: 2;
+	}
+  </style>
+</body>
+</html>
