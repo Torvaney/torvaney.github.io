@@ -21,4 +21,5 @@ Some links:
 * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
 * [XGEEFAX](https://twitter.com/XGEEFAX)
 * [FPL optimiser twitter bot](https://twitter.com/fpl_optimiser)
+* [The Duck Debugger](projects/duck-debugger.html)
 """
