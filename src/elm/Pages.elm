@@ -20,11 +20,9 @@ Some links:
   * [XGEEFAX](https://twitter.com/XGEEFAX)
   * [FPL optimiser twitter bot](https://twitter.com/fpl_optimiser)
   * [blog](http://www.statsandsnakeoil.com)
-
-* NLP (sorta)
-  * [Test a human's language model](projects/human-language-model.html)
+* NLP (kinda)
+  * [Test your (human) language model](projects/human-language-model.html)
   * [The Duck Debugger](projects/duck-debugger.html)
-
 * Miscellaneous
   * [Chaos game](projects/chaosgame.html)
   * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
