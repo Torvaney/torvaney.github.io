@@ -2,6 +2,8 @@
 
 # Elm guff
 elm-stuff
+node_modules
+package-lock.json
 
 # OS X guff
 .DS_Store
