@@ -12,7 +12,6 @@ Email: torvaney [at] protonmail.com
 -- PROJECTS
 
 projectText = """
-Some links:
 
 ### Soccer
 

@@ -9706,7 +9706,7 @@ var _user$project$Types$Model = F2(
 var _user$project$Types$Projects = {ctor: 'Projects'};
 var _user$project$Types$About = {ctor: 'About'};
 
-var _user$project$Pages$projectText = '\nSome links:\n\n### Soccer\n\n  * [xG interactive](projects/xG.html)\n  * [Soccer event logger](projects/tracker.html)\n  * [XGEEFAX](https://twitter.com/XGEEFAX)\n  * [FPL optimiser twitter bot](https://twitter.com/fpl_optimiser)\n  * [blog](http://www.statsandsnakeoil.com)\n\n### NLP (kinda)\n\n  * [Test your (human) language model](projects/human-language-model.html)\n  * [The Duck Debugger](projects/duck-debugger.html)\n\n### Miscellaneous\n\n  * [Chaos game](projects/chaosgame.html)\n  * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)\n  * [Wolf and Hare](projects/wolf-and-hare.html)\n';
+var _user$project$Pages$projectText = '\n\n### Soccer\n\n  * [xG interactive](projects/xG.html)\n  * [Soccer event logger](projects/tracker.html)\n  * [XGEEFAX](https://twitter.com/XGEEFAX)\n  * [FPL optimiser twitter bot](https://twitter.com/fpl_optimiser)\n  * [blog](http://www.statsandsnakeoil.com)\n\n### NLP (kinda)\n\n  * [Test your (human) language model](projects/human-language-model.html)\n  * [The Duck Debugger](projects/duck-debugger.html)\n\n### Miscellaneous\n\n  * [Chaos game](projects/chaosgame.html)\n  * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)\n  * [Wolf and Hare](projects/wolf-and-hare.html)\n';
 var _user$project$Pages$aboutText = '\nI am a data scientist based in London (UK).\n\nEmail: torvaney [at] protonmail.com\n';
 
 var _user$project$State$subscriptions = function (model) {
