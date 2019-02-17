@@ -1,1 +1,1 @@
-npx elm-make src/elm/Main.elm --output src/static/js/main.js
+pandoc -c src/static/css/home.css -s src/md/home.md -o index.html
