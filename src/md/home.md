@@ -17,6 +17,7 @@
 * [blog](http://www.statsandsnakeoil.com)
 * [regista (R package)](https://github.com/Torvaney/regista)
 * [ggsoccer (R package)](https://github.com/torvaney/ggsoccer)
+* [soccerstan (Github)](https://github.com/Torvaney/soccerstan)
 
 ### NLP (kinda)
 
@@ -28,4 +29,4 @@
 * [Chaos game](projects/chaosgame.html)
 * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
 * [Wolf and Hare](projects/wolf-and-hare.html)
-* [Terminal Snake](https://github.com/Torvaney/terminal-snake)
+* [Terminal Snake (Github)](https://github.com/Torvaney/terminal-snake)
