@@ -31,4 +31,5 @@ projectText = """
   * [Chaos game](projects/chaosgame.html)
   * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
   * [Wolf and Hare](projects/wolf-and-hare.html)
+  * [Terminal Snake](https://github.com/Torvaney/terminal-snake)
 """
