@@ -7,3 +7,6 @@ package-lock.json
 
 # OS X guff
 .DS_Store
+
+# VS Code guff
+.vscode
