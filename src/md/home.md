@@ -30,3 +30,4 @@
 * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
 * [Wolf and Hare](projects/wolf-and-hare.html)
 * [Terminal Snake (Github)](https://github.com/Torvaney/terminal-snake)
+* [Flow solver](projects/flow-solver.html)

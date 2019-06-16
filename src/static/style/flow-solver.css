@@ -1,0 +1,76 @@
+body {
+        margin: auto;
+        padding-right: 1em;
+        padding-left: 1em;
+        max-width: 40em;
+        font-family: Helvetica, Arial, sans-serif;
+        font-weight: 300;
+        font-size: 100%;
+        line-height: 140%;
+        color: #919191;
+        background-color: #010001;
+
+}
+
+a {
+        color: #FF00FF;
+        text-decoration: none;
+}
+
+
+a:hover {
+        font-weight:bold;
+}
+
+pre {
+        border-radius: 5px;
+        background-color: #1b1b1b;
+}
+
+code {
+        margin: 15px;
+        color: #00FFFF;
+}
+
+h1, h2, h3, h4, h5 {
+        font-weight: bold;
+        padding-top: 15px;
+}
+
+h1 { color: #0000FF; }
+h2 { color: #00FFFF; }
+h3 { color: #EDED00; }
+h4 { color: #FF00FF; }
+h5 { color: #FF0001; }
+
+strong { color: #EDED00; }
+
+hr {
+        height: 2px;
+        color: #01008D;
+        background-color: #01008D;
+        border: none;
+        margin: 70px;
+}
+
+img {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+}
+
+
+/* Pipes */
+
+.blue    { color: #0000FF; }
+.skyblue { color: #00FFFF; }
+.yellow  { color: #EDED00; }
+.pink    { color: #FF00FF; }
+.red     { color: #FF0001; }
+.green   { color: #00FF00; }
+
+marquee {
+        margin: 0px;
+        border: 0px;
+}
