@@ -1,8 +1,8 @@
-% Flow Free: A *SAT*isfying solution
+% Flow Free: A SATisfying solution
 
 A solver for the Flow Free puzzle game using Clojure and SAT.
 
-<img src="../src/static/img/flow-solver/before-and-after.png" width="500"/>
+<img src="../src/static/img/flow-solver/before-and-after.png" class="wide"/>
 
 Find the code [on github](https://github.com/Torvaney/flow-solver).
 
@@ -20,15 +20,29 @@ That said, I can't help but think that it would be more satisfying if we could f
 
 The core mechanics of the game are pretty simple. At each level, you are presented with a map with pairs of coloured dots occupying some cells:
 
-[Unsolved map]
+<br>
+
+<img src="../src/static/img/flow-solver/flow-free-puzzle.png" class="skinny"/>
+
+<p style="text-align: center">Screenshot from [youtube](https://youtu.be/TCnQPsExQuY?t=30).</p>
+
+<br>
 
 This usually (although not always) takes the form of a square grid. As you progress through the game, the levels get harder by either increasing the size of the map, and/or increasing the number of coloured dot pairs.
 
 The goal of the game is to connect the dots with pipes that can move to adjacent cells, such that every cell is filled:
 
-[Gif of a map being solved]
+<br>
 
-Naturally, this is very intuituve to a human. This is part of what makes the game successful, after all. However, it is presented to us in a visual form. in order to pass this off to a computer to solve, we need to figure out a reasonable representation of the puzzle as data.
+<img src="../src/static/img/flow-solver/flow-free-solution.gif" class="skinny"/>
+
+<p style="text-align: center">Gameplay from [youtube](https://youtu.be/TCnQPsExQuY?t=30).</p>
+
+<br>
+
+So far, so intuitive.
+
+However, in order to pass the puzzle off to a computer to solve, we need to represent the puzzle as data.
 
 <marquee behavior="scroll" direction="right" scrollamount="2" class="pink">-------------</marquee>
 <marquee behavior="scroll" direction="left" scrollamount="1" class="orange">-----------</marquee>
@@ -36,9 +50,75 @@ Naturally, this is very intuituve to a human. This is part of what makes the gam
 
 ## Representing the problem
 
-### Graphs all the way down
+Perhaps the most obvious way to think about the puzzle is as it is displayed in that app. Namely as an array in which each cell takes a colour. The goal of the puzzle is then to find the correct (more on this later) colour for each cell.
 
-Looking at a solved Flow puzzle, it's tempting to take the appearance of the puzzle at face value
+This is a fine approach, and will work for the examples we've seen so far. However, it is not generic enough to handle *everything* that Flow Free has to offer.
+
+The Flow Free app comes with a range of additional maze layouts, some of which would be cumbersome to store in a simple array layout. These can be grouped according to a few key characteristics:
+
+#### Alternate shapes
+
+<div class="img-row">
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/inkblot.jpeg" style="width:100%"/>
+</div>
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/worms.jpeg" style="width:100%"/>
+</div>
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/amoeba.jpeg" style="width:100%"/>
+</div>
+
+</div>
+
+#### Additional connections
+
+<div class="img-row">
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/bridges.jpeg" style="width:100%"/>
+</div>
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/hexes.jpeg" style="width:100%"/>
+</div>
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/warps.jpeg" style="width:100%"/>
+</div>
+
+</div>
+
+#### Blocked or missing connections
+
+<div class="img-row">
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/courtyard.jpeg" style="width:100%"/>
+</div>
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/star-field.jpeg" style="width:100%"/>
+</div>
+
+<div class="img-column">
+  <img src="../src/static/img/flow-solver/courtyard-spin.jpeg" style="width:100%"/>
+</div>
+
+</div>
+
+<br>
+
+Or, of course, some combination of the three:
+
+<img src="../src/static/img/flow-solver/combination.jpeg" class="skinny"/>
+
+So what we need is something that can handle these cases as well as the standard square map.
+
+### Graphs all the way down
 
 * A natural solution is a graph
 * After all, everything is a graph
@@ -49,13 +129,7 @@ Looking at a solved Flow puzzle, it's tempting to take the appearance of the puz
 [Note how square graphs are input into the program with an .edn file]
 
 * This representation also extends beyond square maps
-* The Flow Free app comes with many "special" mazes to solve, which can all be handles elegantly
-  * Display these with sample images:
-    * Bridges: Bridge cells are simply 2 distinct nodes, one with "vertical" edges, the other with "horizontal" ones
-    * Warps: Edges that join non-adjacent
-    * Stars, Courtyard, Walls, etc: Any walls are simply "missing" edges (i.e. 2 adjacent cells that are not connected by a direct edge)
-    * Alternate shapes (Hexes, Amoeba, ...)
-    * ???
+
 
 <marquee behavior="scroll" direction="left" scrollamount="1" class="green">------------</marquee>
 <marquee behavior="scroll" direction="right" scrollamount="2" class="blue">---------------</marquee>
@@ -71,7 +145,7 @@ So how do we convert _this_ problem to SAT?
 
 We come up with the following constraints:
 
-#### Each cell must have exactly one colour
+#### Each cell must have **exactly one** colour
 
 This may seem obvious but we still need to make it explicit.
 

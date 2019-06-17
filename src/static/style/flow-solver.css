@@ -19,7 +19,7 @@ a {
 
 
 a:hover {
-        font-weight:bold;
+        text-decoration: underline;
 }
 
 pre {
@@ -53,11 +53,27 @@ hr {
         margin: 70px;
 }
 
+/* Images */
+
 img {
         display: block;
         margin-left: auto;
         margin-right: auto;
-        width: 90%;
+}
+
+.wide   { width: 90%;}
+.skinny { width: 30%;}
+
+.img-column {
+        float: left;
+        width: 30%;
+        padding: 10px;
+}
+
+.img-row::after {
+        content: "";
+        clear: both;
+        display: table;
 }
 
 
