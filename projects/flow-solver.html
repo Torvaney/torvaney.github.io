@@ -11,69 +11,6 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <style>
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
   <link rel="stylesheet" href="../src/static/style/flow-solver.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
@@ -88,10 +25,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Find the code <a href="https://github.com/Torvaney/flow-solver">on github</a>.</p>
 <p><marquee behavior="scroll" direction="left" scrollamount="1" class="red">————</marquee> <marquee behavior="scroll" direction="left" scrollamount="2" class="blue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="1" class="green">————-</marquee></p>
 <h2 id="overview">Overview</h2>
-<p>On a recent holiday, I found out that the friend I was travelling with plays this game a lot. A lot as in <em>every day for the past few years</em>. And to be fair, I can see the appeal. It’s a pleasant game, and there is a feeling of satisfaction that comes with solving one of the game’s puzzles.</p>
-<p>That said, I can’t help but think that it would be more satisfying if we could find a solution to <em>all</em> Flow Free mapa. This blog explores one way to do this using <a href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Boolean Satisfiability</a> (SAT).</p>
+<p>On a recent holiday, I found out that the friend I was travelling with plays this game a lot. A lot as in <em>every day for the past few years</em>. And to be fair, I can see the appeal (to an extent…). It’s a pleasant game, and there is a feeling of satisfaction that comes with solving one of the game’s puzzles.</p>
+<p>But wouldn’t it be more satisfying if we could find a solution to <em>all</em> Flow Free maps?</p>
+<p>This blog explores one way to do this using <a href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Boolean Satisfiability</a> (SAT).</p>
 <h3 id="so-what-is-flow-free-anyway">So, what is Flow Free anyway?</h3>
-<p>The core mechanics of the game are pretty simple. At each level, you are presented with a map with pairs of coloured dots occupying some cells:</p>
+<p>The core mechanics of the game are pretty simple<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. At each level, you are presented with a map with pairs of coloured dots occupying some cells:</p>
 <p><br></p>
 <p><img src="../src/static/img/flow-solver/flow-free-puzzle.png" class="skinny"/></p>
 <p style="text-align: center">
@@ -137,7 +75,7 @@ Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
 <p><img src="../src/static/img/flow-solver/warps.jpeg" style="width:100%"/></p>
 </div>
 </div>
-<h4 id="blocked-or-missing-connections">Blocked or missing connections</h4>
+<h4 id="walls-blocked-connections">Walls (blocked connections)</h4>
 <div class="img-row">
 <div class="img-column">
 <p><img src="../src/static/img/flow-solver/courtyard.jpeg" style="width:100%"/></p>
@@ -154,58 +92,79 @@ Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
 <p><img src="../src/static/img/flow-solver/combination.jpeg" class="skinny"/></p>
 <p>So what we need is something that can handle these cases as well as the standard square map.</p>
 <h3 id="graphs-all-the-way-down">Graphs all the way down</h3>
-<ul>
-<li>A natural solution is a graph</li>
-<li>After all, everything is a graph</li>
-<li>[Explain how you go from map &lt;-&gt; graph]</li>
-</ul>
+<p>To me, it feels like the natural solution is a <a href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</a>. After all, <a href="https://gephi.wordpress.com/2011/10/12/everything-looks-like-a-graph-but-almost-nothing-should-ever-be-drawn-as-one/">everything is a graph</a>, even if the best way to draw then <a href="https://dhs.stanford.edu/algorithmic-literacy/everything-is-a-graph-and-drawing-it-as-such-is-always-the-best-thing-to-do/">is disputed</a>.</p>
+<p>[Explain the rationale/argument]</p>
+<p>In this way, the representation of a puzzle map as a graph is relatively straighforward. Each cell is represented by a node in the graph. If a pipe can move from one cell to another, then those two cells will be connected by an edge.</p>
+<p>For example, for a square map this looks like:</p>
 <p>[Show an example image of a map and unsolved graph. The solved version will be shown later. Maybe the same map from the gif earlier]</p>
-<p>[Note how square graphs are input into the program with an .edn file]</p>
-<ul>
-<li>This representation also extends beyond square maps</li>
-</ul>
+<p>However, this also works for the other variants:</p>
+<p>[another example map]</p>
 <p><marquee behavior="scroll" direction="left" scrollamount="1" class="green">————</marquee> <marquee behavior="scroll" direction="right" scrollamount="2" class="blue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="2" class="skyblue">————-</marquee></p>
 <h2 id="solving-the-problem">Solving the problem</h2>
+<p>One convenient way to solve a puzzle like this is to convert it to SAT. SAT, according to <a href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Wikipedia</a>:</p>
+<blockquote>
+<p>… asks whether the variables of a given Boolean formula can be consistently replaced by the values TRUE or FALSE in such a way that the formula evaluates to TRUE. If this is the case, the formula is called satisfiable.</p>
+</blockquote>
+<p>This is useful because this particular problem is very well studied, and as a result, there are many highly effective off-the-shelf libraries for solving SAT problems. So instead of having to code our own solution from scratch, we can instead convert this problem into a Boolean formula, and pass it off to a pre-existing solver.</p>
+<p>In order to convert a given Flow Free level to SAT, we must come up with a set of variables and a set of constraints, such that the solved expression (i.e. all the variables are set to “true” or “false”, and all the constraints evaluate to “true”) will give us a valid puzzle solution.</p>
+<h3 id="variables">Variables</h3>
+<p>The only action the player can actually take in the game is altering a cell’s colour, and so it makes sense for the base propositions of the Boolean formula to take this form, too<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
+<p>In the solver, a variable is created representing each possible colour that each cell could take in the solved puzzle. For example, in a 3-colour map, cell <em>i</em> may be associated with 3 variables:</p>
 <ul>
-<li>[Intro to SAT]</li>
+<li><em>i</em> is blue</li>
+<li><em>i</em> is red</li>
+<li><em>i</em> is green</li>
 </ul>
-<p>So how do we convert <em>this</em> problem to SAT?</p>
-<p>…</p>
-<p>We come up with the following constraints:</p>
-<h4 id="each-cell-must-have-exactly-one-colour">Each cell must have <strong>exactly one</strong> colour</h4>
-<p>This may seem obvious but we still need to make it explicit.</p>
-<p>[Pictorial example]</p>
+<p>[Note about modelling the edges instead]</p>
+<h3 id="constraints">Constraints</h3>
+<h4 id="each-cell-must-be-exactly-one-colour">Each cell must be <strong>exactly one</strong> colour</h4>
+<p>The first constraint follows on naturally from the variable definition. It may seem obvious but we still need to make it explicit. If we extend the example above we get something like:</p>
+<ul>
+<li>(<em>i</em> is blue) and (<em>i</em> is not green) and (<em>i</em> is not red), or</li>
+<li>(<em>i</em> is green) and (<em>i</em> is not blue) and (<em>i</em> is not red), or</li>
+<li>(<em>i</em> is red) and (<em>i</em> is not green) and (<em>i</em> is not blue), or</li>
+</ul>
 <h4 id="connecting-cells-must-be-adjacent-to-at-least-two-coloured-edges-of-the-same-colour">Connecting cells must be adjacent to <strong>at least two</strong> coloured edges of the <strong>same colour</strong></h4>
-<p>In other words, empty cells must be filled by 1 pipe going in and out of the cell:</p>
-<p>[Pictorial example]</p>
-<h4 id="terminal-nodes-must-be-adjacent-to-at-least-one-coloured-edge"><strong>Terminal nodes</strong> must be adjacent to <strong>at least one</strong> coloured edge</h4>
-<p>I think this one is relatively simple. Definitionally, terminal cells (the points given on an unsolved map) must be connected to only one other cell.</p>
-<p><br></p>
-<p>Having represented our problem in this way, we can pass it off to a SAT solver and receive our solution (if one exists).</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1"><span class="ex">lein</span> run path/to/file.edn</a></code></pre></div>
+<p>In other words, cells that appear empty at the start must be filled by a pipe going in and a pipe going out of the cell. This helps to prevent pipes from ending before they reaches a terminal cell (the coloured points given on an unsolved map).</p>
+<h4 id="terminal-cells-must-be-adjacent-to-at-least-one-coloured-edge"><strong>Terminal cells</strong> must be adjacent to <strong>at least one</strong> coloured edge</h4>
+<p>The rationale here is similar to that of connecting cells. However, by nature terminal cells must be connected to only <em>one</em> other cell, rather than two. This constraint ensures that pipes actually connect to their start/end points.</p>
+<h3 id="solution">Solution</h3>
+<p>Having represented our problem in this way, we can hand it off to a SAT solver and receive our solution (if one exists):</p>
 <p>[Insert an example image of a solved graph here]</p>
-<h3 id="but-wait">But wait…</h3>
-<p>There is a slight problem with this example.</p>
-<p><em>explain loops</em></p>
-<p>[Show an example with a loop]</p>
-<p><br></p>
-<p><em>Conclusion goes here</em></p>
-<ul>
-<li>Link to code</li>
-<li>What other approaches could I have tried?</li>
-<li>Genetic algorithm &gt; SAT</li>
-<li>Machine learning solution (all the solutions available online)</li>
-</ul>
 <p><marquee behavior="scroll" direction="right" scrollamount="2" class="pink">————</marquee> <marquee behavior="scroll" direction="left" scrollamount="2" class="skyblue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="1" class="yellow">————-</marquee></p>
+<h2 id="wrap-up">Wrap up</h2>
+<p>As I mentioned above, the code for this solver is available <a href="https://github.com/Torvaney/flow-solver">on github</a>. This is written in Clojure and uses the <a href="https://github.com/Engelberg/rolling-stones">rolling-stones</a> library (an interface to <a href="https://www.sat4j.org">sat4j</a>) to solve a given puzzle, returning “before” and “after” images similar to those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows you to use arbitrary clojure data structures as your SAT variables. Likewise the <a href="https://github.com/Engelberg/ubergraph">ubergraph</a> library (by the same author!) made working with and visualising the graphs extremely painless, which was a nice surprise.</p>
+<p>Although I used SAT to solve this, I also considered using a genetic algorithm. As far as I can see, by converting the constraints to a fitness function, a very similar approach could find success here. There is also a website, <a href="https://flowfreesolutions.com">flowfreesolutions.com</a>, that lists solutions to every level of Flow Free. It’d be an interesting (if quite different) project to try and create a solver using supervised learning methods and a training set from flowfreesolutions.</p>
 <hr />
 <h2 id="appendix">Appendix</h2>
-<h3 id="code-acknowledgements">Code &amp; acknowledgements</h3>
-<ul>
-<li>Rolling stone library is really nice w/ clojure as SAT variables</li>
-</ul>
 <h3 id="prior-work">Prior work</h3>
+<p>Since I did this project as part of an attempt to learn a bit more about SAT, I did not do much research beforehand. However, attempting to create a solver for this kind of puzzle is far from unique, and there are plenty of other (generally more impressive) ones floating around:</p>
 <ul>
-<li>https://mzucker.github.io/2016/08/28/flow-solver.html#theend</li>
+<li>August 2007: <a href="https://www.mathematica-journal.com/data/uploads/2007/08/NumberLink.pdf">“Beyond Sudoku”</a>, an article in The Mathematica Journal inviting readers to send in their solutions for some Numberlink puzzles to win a prize. I suspect I may have missed the boat on this one.</li>
+<li>April 2012: A <a href="https://www.mdpi.com/1999-4893/5/2/176">general solver</a> for this type of puzzle using ZDDs (no, I hadn’t heard of ZDDs either).</li>
+<li>November 2013: A <a href="http://bach.istc.kobe-u.ac.jp/copris/puzzles/numberlink/">Numberlink solver</a> Scala (using <a href="http://bach.istc.kobe-u.ac.jp/copris/">Copris</a>)</li>
+<li>January 2017: A <a href="https://puzzling.stackexchange.com/questions/47685/strategy-for-solving-flow-free-puzzles">puzzling.stackexchange.com discussion</a> on the strategies for solving Flow Free levels. The top answer suggests a few heuristics to help solve the puzzles.</li>
+<li>April 2017: A <a href="https://github.com/lukegarbutt/Flow-Free-Solver">python solver</a> that uses heuristics to solve each level. This comes with a <a href="https://www.youtube.com/watch?v=zbH6ZhmLx3c&amp;list=PLsYctZrw5bWte2DOCCxhUF9Nzr_z_fZK6">video series</a> explaining the solver. Another cool thing about this project is that it takes the screen of the phone or device running Flow Free as its input.</li>
 </ul>
+<p>Some additional entries from 2016 can be found in <a href="https://mzucker.github.io/2016/08/28/flow-solver.html#theend">Matt Zucker’s post</a>. I have pasted these below:</p>
+<ul>
+<li>Jun 2011: just a video of a solver proceeding at a leisurely pace, couldn’t find source.</li>
+<li>Nov 2011: solver in C++ for a related puzzle, looks like a standard recursive backtracker.</li>
+<li>Aug 2012: solver in Perl, mothballed, doesn’t work, but README has a link to an interesting paper.</li>
+<li>Oct 2012: solver in C#, appears not to work based upon final commit message.</li>
+<li>Feb 2013: chatting about designing solvers in a C++ forum.</li>
+<li>Jul 2013: solver in R, framed as integer programming.2</li>
+<li>Sep 2013: two solvers from the same programmer, both in C#, both use DLX; author notes long solve times for large grids.</li>
+<li>Feb 2014: solver as coding assignment in a C++ class, yikes.</li>
+<li>Mar 2014: StackOverflow chat on designing a solver, top answer suggests reducing to SAT.3</li>
+<li>Feb 2016: solver in MATLAB using backtracking; very slow on puzzles &gt; 10x10 but it does live image capture and there’s a cool YouTube demo.</li>
+</ul>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>In fact, in the process of writing this post, I discovered that the origins of the game go back to <a href="https://en.wikipedia.org/wiki/Numberlink">1897 as “Numberlink”</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>In the initial solver, I modelled the pipes more directly by assigning colours to the <em>edges</em> of the graph rather than the nodes. I think this formulation is potentially more elegant, but it turned out the computational requirements are an order of magnitude larger than setting the cell colours, due to the larger number of variables involved. In the end, a solver isn’t much use if it can’t actually be run.<a href="#fnref2" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
 </body>
 </html>
