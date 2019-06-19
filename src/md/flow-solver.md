@@ -217,19 +217,19 @@ Since I did this project as part of an attempt to learn a bit more about SAT, I 
 * August 2007: ["Beyond Sudoku"](https://www.mathematica-journal.com/data/uploads/2007/08/NumberLink.pdf), an article in The Mathematica Journal inviting readers to send in their solutions for some Numberlink puzzles to win a prize. I suspect I may have missed the boat on this one.
 * April 2012: A [general solver](https://www.mdpi.com/1999-4893/5/2/176) for this type of puzzle using ZDDs (no, I hadn't heard of ZDDs either).
 * November 2013: A [Numberlink solver](http://bach.istc.kobe-u.ac.jp/copris/puzzles/numberlink/) Scala (using [Copris](http://bach.istc.kobe-u.ac.jp/copris/))
+* Aug 2016: [A fast, automated solver written in C](https://mzucker.github.io/2016/08/28/flow-solver.html) by Matt Zucker, looking at the puzzle as a [shortest-path](https://en.wikipedia.org/wiki/Shortest_path_problem) problem.
 * January 2017: A [puzzling.stackexchange.com discussion](https://puzzling.stackexchange.com/questions/47685/strategy-for-solving-flow-free-puzzles) on the strategies for solving Flow Free levels. The top answer suggests a few heuristics to help solve the puzzles.
 * April 2017: A [python solver](https://github.com/lukegarbutt/Flow-Free-Solver) that uses heuristics to solve each level. This comes with a [video series](https://www.youtube.com/watch?v=zbH6ZhmLx3c&list=PLsYctZrw5bWte2DOCCxhUF9Nzr_z_fZK6) explaining the solver. Another cool thing about this project is that it takes the screen of the phone or device running Flow Free as its input.
 
-
 Some additional entries from 2016 can be found in [Matt Zucker's post](https://mzucker.github.io/2016/08/28/flow-solver.html#theend). I have pasted these below:
 
-* Jun 2011: just a video of a solver proceeding at a leisurely pace, couldn’t find source.
-* Nov 2011: solver in C++ for a related puzzle, looks like a standard recursive backtracker.
-* Aug 2012: solver in Perl, mothballed, doesn’t work, but README has a link to an interesting paper.
-* Oct 2012: solver in C#, appears not to work based upon final commit message.
-* Feb 2013: chatting about designing solvers in a C++ forum.
-* Jul 2013: solver in R, framed as integer programming.2
-* Sep 2013: two solvers from the same programmer, both in C#, both use DLX; author notes long solve times for large grids.
-* Feb 2014: solver as coding assignment in a C++ class, yikes.
-* Mar 2014: StackOverflow chat on designing a solver, top answer suggests reducing to SAT.3
-* Feb 2016: solver in MATLAB using backtracking; very slow on puzzles > 10x10 but it does live image capture and there’s a cool YouTube demo.
+* Jun 2011: just a [video](https://www.youtube.com/watch?v=ghEK_79owaU) of a solver proceeding at a leisurely pace, couldn’t find source.
+* Nov 2011: [solver in C++](https://github.com/imos/Puzzle/tree/master/NumberLink) for a related puzzle, looks like a standard recursive backtracker.
+* Aug 2012: [solver in Perl](https://github.com/DeeNewcum/FlowFree), mothballed, doesn’t work, but README has a link to an interesting paper.
+* Oct 2012: [solver in C#](https://github.com/JamesDunne/freeflow-solver), appears not to work based upon final commit message.
+* Feb 2013: chatting about designing solvers in a [C++ forum](http://www.cplusplus.com/forum/general/93467/).
+* Jul 2013: [solver in R](https://www.r-bloggers.com/using-r-and-integer-programming-to-find-solutions-to-flowfree-game-boards/), framed as integer programming.2
+* Sep 2013: [two](https://github.com/taylorjg/FlowFreeDlx) [solvers](https://github.com/taylorjg/FlowFreeSolverWpf) from the same programmer, both in C#, both use DLX; author notes long solve times for large grids.
+* Feb 2014: solver as [coding assignment](http://cs.mwsu.edu/~terry/?route=/courses/3013/content/assignments/page/Program1.md) in a C++ class, yikes.
+* Mar 2014: [StackOverflow chat](http://stackoverflow.com/questions/23622068/algorithm-for-solving-flow-free-game) on designing a solver, top answer suggests reducing to SAT.3
+* Feb 2016: [solver in MATLAB](https://github.com/GameAutomators/Flow-Free) using backtracking; very slow on puzzles > 10x10 but it does live image capture and there’s a cool YouTube demo.
