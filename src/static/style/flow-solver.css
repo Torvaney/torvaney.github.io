@@ -61,7 +61,8 @@ img {
         margin-right: auto;
 }
 
-.wide   { width: 90%;}
+.fat    { width: 90%;}
+.chubby { width: 60%;}
 .skinny { width: 30%;}
 
 .img-column {
