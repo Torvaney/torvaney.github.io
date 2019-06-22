@@ -109,7 +109,7 @@ Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
 <p>… asks whether the variables of a given Boolean formula can be consistently replaced by the values TRUE or FALSE in such a way that the formula evaluates to TRUE. If this is the case, the formula is called satisfiable.</p>
 </blockquote>
 <p>This is useful because this particular problem is very well studied, and as a result, there are many extremely effective off-the-shelf libraries for solving SAT problems. So instead of having to write our own solution from scratch, we can instead convert this problem into a Boolean formula, and pass it off to a pre-existing solver.</p>
-<p>In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to “true” or “false”, and all the constraints evaluate to “true”) will give us a valid puzzle solution.</p>
+<p>In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to “true” or “false”, and all the constraints evaluate to “true”) will give us a valid puzzle solution<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
 <h3 id="variables">Variables</h3>
 <p>[Note about modelling the edges]</p>
 <p>For example, in a 3-colour map, edge <em>i</em> may be associated with three separate variables:</p>
@@ -138,8 +138,9 @@ Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
 <p><br></p>
 <p><marquee behavior="scroll" direction="right" scrollamount="2" class="pink">————</marquee> <marquee behavior="scroll" direction="left" scrollamount="2" class="skyblue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="1" class="yellow">————-</marquee></p>
 <h2 id="wrap-up-technical-notes">Wrap up &amp; technical notes</h2>
-<p>As I mentioned above, the code for this solver is available <a href="https://github.com/Torvaney/flow-solver">on github</a>. This is written in Clojure and uses the <a href="https://github.com/Engelberg/rolling-stones">rolling-stones</a> library (an interface to <a href="https://www.sat4j.org">sat4j</a>) to solve a given puzzle, returning “before” and “after” images similar to those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows you to use arbitrary clojure data structures as your SAT variables. Likewise the <a href="https://github.com/Engelberg/ubergraph">ubergraph</a> library (as it happens, this is by the same author!) made working with and visualising the graphs extremely painless, which was a nice surprise.</p>
-<p>Although I used SAT to solve this, I also considered using a genetic algorithm. As far as I can see, by converting the constraints to a fitness function, a very similar approach could find success here. There is also a website, <a href="https://flowfreesolutions.com">flowfreesolutions.com</a>, that lists solutions to every level of Flow Free. It’d be an interesting (if quite different) project to try and create a solver using supervised learning methods and a training set from flowfreesolutions<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<p>As I mentioned above, the code for this solver is available <a href="https://github.com/Torvaney/flow-solver">on github</a>. This is written in Clojure and uses the <a href="https://github.com/Engelberg/rolling-stones">rolling-stones</a> library (an interface to <a href="https://www.sat4j.org">sat4j</a>) to solve a given puzzle, returning “before” and “after” images similar to those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows you to use arbitrary clojure data structures as your SAT variables. Likewise the <a href="https://github.com/Engelberg/ubergraph">ubergraph</a> library<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> made working with and visualising the graphs extremely painless, which was a nice surprise. See the project README for more instructions on running the solver.</p>
+<p>Although I used SAT to solve this, there are a few other approaches that I think could prove interesting. One such approach is using a genetic algorithm instead of SAT to find the edge colours. As far as I can see, by converting the constraints to a fitness function, a very similar approach could find success. Although I think this would be significantly less convenient and efficient than SAT.</p>
+<p>There is also a website, <a href="https://flowfreesolutions.com">flowfreesolutions.com</a>, that lists solutions to every level of Flow Free. This got me thinking that it’d be an interesting (if quite different) project to try and create a solver using supervised learning methods. After all, it would be relatively trivial to generate a training set of valid mazes automatically.</p>
 <hr />
 <h2 id="appendix">Appendix</h2>
 <h3 id="prior-work">Prior work</h3>
@@ -153,7 +154,7 @@ Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
 <li>Jan 2017: A <a href="https://puzzling.stackexchange.com/questions/47685/strategy-for-solving-flow-free-puzzles">puzzling.stackexchange.com discussion</a> on the strategies for solving Flow Free levels. The top answer suggests a few heuristics to help solve the puzzles.</li>
 <li>Apr 2017: A <a href="https://github.com/lukegarbutt/Flow-Free-Solver">python solver</a> that uses heuristics to solve each level. This comes with a <a href="https://www.youtube.com/watch?v=zbH6ZhmLx3c&amp;list=PLsYctZrw5bWte2DOCCxhUF9Nzr_z_fZK6">video series</a> explaining the solver. Another cool thing about this project is that it takes the screen of the phone or device running Flow Free as its input.</li>
 </ul>
-<p>Some additional entries from 2016 and earlier can be found in <a href="https://mzucker.github.io/2016/08/28/flow-solver.html#theend">Matt Zucker’s post</a>. I have pasted these below:</p>
+<p>Some additional entries from 2016 and earlier can be found in <a href="https://mzucker.github.io/2016/08/28/flow-solver.html#theend">Matt Zucker’s post</a>, which I have pasted below:</p>
 <ul>
 <li>Jun 2011: just a <a href="https://www.youtube.com/watch?v=ghEK_79owaU">video</a> of a solver proceeding at a leisurely pace, couldn’t find source.</li>
 <li>Nov 2011: <a href="https://github.com/imos/Puzzle/tree/master/NumberLink">solver in C++</a> for a related puzzle, looks like a standard recursive backtracker.</li>
@@ -169,9 +170,10 @@ Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
 <section class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>In fact, in the process of writing this post, I discovered that the origins of the game go back to <a href="https://en.wikipedia.org/wiki/Numberlink">1897 as “Numberlink”</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think <a href="https://www.youtube.com/watch?v=XGl-TumKD98">this talk</a> does a good job of walking through this at a slower pace than I have done here. I’ve also shamelessly ripped off the tile pun for this blog post.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 <li id="fn2"><p>After all, <a href="https://gephi.wordpress.com/2011/10/12/everything-looks-like-a-graph-but-almost-nothing-should-ever-be-drawn-as-one/">everything is a graph</a>, even if we’re not sure of the best way <a href="https://dhs.stanford.edu/algorithmic-literacy/everything-is-a-graph-and-drawing-it-as-such-is-always-the-best-thing-to-do/">to draw them</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p>Or a similar site. The potential size of the dataset increases significantly when you note that you can also use Numberlink (&amp; any other analagous games), and/or trivially generate new example mazes to solve.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think <a href="https://www.youtube.com/watch?v=XGl-TumKD98">this talk</a> does a good job of walking through this at a slower pace than I have done here. I’ve also shamelessly ripped off the tile pun for this blog post.<a href="#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>As it happens, both rolling-stones and ubergraph have the same author!<a href="#fnref4" class="footnote-back">↩</a></p></li>
 </ol>
 </section>
 </body>

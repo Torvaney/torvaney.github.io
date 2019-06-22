@@ -158,7 +158,9 @@ As I have alluded to already, one convenient way to solve a puzzle like this is 
 
 This is useful because this particular problem is very well studied, and as a result, there are many extremely effective off-the-shelf libraries for solving SAT problems. So instead of having to write our own solution from scratch, we can instead convert this problem into a Boolean formula, and pass it off to a pre-existing solver.
 
-In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to "true" or "false", and all the constraints evaluate to "true") will give us a valid puzzle solution.
+In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to "true" or "false", and all the constraints evaluate to "true") will give us a valid puzzle solution[^1].
+
+[^1]: A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think [this talk](https://www.youtube.com/watch?v=XGl-TumKD98) does a good job of walking through this at a slower pace than I have done here. I've also shamelessly ripped off the tile pun for this blog post.
 
 ### Variables
 
