@@ -158,9 +158,9 @@ As I have alluded to already, one convenient way to solve a puzzle like this is 
 
 This is useful because this particular problem is very well studied, and as a result, there are many extremely effective off-the-shelf libraries for solving SAT problems. So instead of having to write our own solution from scratch, we can instead convert this problem into a Boolean formula, and pass it off to a pre-existing solver.
 
-In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to "true" or "false", and all the constraints evaluate to "true") will give us a valid puzzle solution[^1].
+In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to "true" or "false", and all the constraints evaluate to "true") will give us a valid puzzle solution[^3].
 
-[^1]: A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think [this talk](https://www.youtube.com/watch?v=XGl-TumKD98) does a good job of walking through this at a slower pace than I have done here. I've also shamelessly ripped off the tile pun for this blog post.
+[^3]: A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think [this talk](https://www.youtube.com/watch?v=XGl-TumKD98) does a good job of walking through this at a slower pace than I have done here. I've also shamelessly ripped off the tile pun for this blog post.
 
 ### Variables
 
@@ -211,9 +211,9 @@ Having represented our problem in this way, we can hand it off to a SAT solver a
 ## Wrap up & technical notes
 
 
-As I mentioned above, the code for this solver is available [on github](https://github.com/Torvaney/flow-solver). This is written in Clojure and uses the [rolling-stones](https://github.com/Engelberg/rolling-stones) library (an interface to [sat4j](https://www.sat4j.org)) to solve a given puzzle, returning "before" and "after" images similar to those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows you to use arbitrary clojure data structures as your SAT variables. Likewise the [ubergraph](https://github.com/Engelberg/ubergraph) library[^3] made working with and visualising the graphs extremely painless, which was a nice surprise. See the project README for more instructions on running the solver.
+As I mentioned above, the code for this solver is available [on github](https://github.com/Torvaney/flow-solver). This is written in Clojure and uses the [rolling-stones](https://github.com/Engelberg/rolling-stones) library (an interface to [sat4j](https://www.sat4j.org)) to solve a given puzzle, returning "before" and "after" images similar to those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows you to use arbitrary clojure data structures as your SAT variables. Likewise the [ubergraph](https://github.com/Engelberg/ubergraph) library[^4] made working with and visualising the graphs extremely painless, which was a nice surprise. See the project README for more instructions on running the solver.
 
-[^3]: As it happens, both rolling-stones and ubergraph have the same author!
+[^4]: As it happens, both rolling-stones and ubergraph have the same author!
 
 Although I used SAT to solve this, there are a few other approaches that I think could prove interesting. One such approach is using a genetic algorithm instead of SAT to find the edge colours. As far as I can see, by converting the constraints to a fitness function, a very similar approach could find success. Although I think this would be significantly less convenient and efficient than SAT.
 
