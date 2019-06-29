@@ -28,6 +28,7 @@
 
 * [Flow solver](projects/flow-solver.html)
 * [Chaos game](projects/chaosgame.html)
+* [Human RNG](projects/human-rng.html)
 * [Terminal Snake (Github)](https://github.com/Torvaney/terminal-snake)
 * [Messenger and army interactive demo](projects/messenger-army-puzzle.html)
 * [Wolf and Hare](projects/wolf-and-hare.html)
