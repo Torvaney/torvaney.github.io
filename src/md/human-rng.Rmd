@@ -260,7 +260,7 @@ balanced_probabilities %>%
 ```
 
 What this chart is telling us is that about 8% of the time someone gives you "8" as 
-their random number, you need to convert it into a "1", somehow. The other 82% 
+their random number, you need to convert it into a "1", somehow. The other 92% 
 of the time, it remains an 8.
 
 This would be simple enough if we had access to a uniform random number generator 
