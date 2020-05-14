@@ -4416,6 +4416,9 @@ var author$project$Home$Project = F4(
 var author$project$Home$ProjectUrl = function (a) {
 	return {$: 'ProjectUrl', a: a};
 };
+var author$project$Home$RelativeUrl = function (a) {
+	return {$: 'RelativeUrl', a: a};
+};
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -4538,14 +4541,18 @@ var author$project$Home$projects = _List_fromArray(
 		'regista',
 		_List_fromArray(
 			['An R package for soccer modelling']),
-		author$project$Home$ProjectUrl('regista'),
+		author$project$Home$RelativeUrl(
+			_List_fromArray(
+				['regista'])),
 		author$project$Home$GithubUrl('regista')),
 		A4(
 		author$project$Home$Project,
 		'ggsoccer',
 		_List_fromArray(
 			['An R package for plotting event data with ggplot2']),
-		author$project$Home$ProjectUrl('ggsoccer'),
+		author$project$Home$RelativeUrl(
+			_List_fromArray(
+				['ggsoccer'])),
 		author$project$Home$GithubUrl('ggsoccer')),
 		A4(
 		author$project$Home$Project,
@@ -5127,6 +5134,9 @@ var author$project$Home$getUrl = function (link) {
 				_List_fromArray(
 					['projects', x]),
 				_List_Nil);
+		case 'RelativeUrl':
+			var xs = link.a;
+			return A2(elm$url$Url$Builder$relative, xs, _List_Nil);
 		case 'GithubUrl':
 			var x = link.a;
 			return A3(

@@ -39,6 +39,7 @@ type alias Project =
 
 type Link
     = ProjectUrl String
+    | RelativeUrl (List String)
     | GithubUrl String
     | ExternalUrl String
     | NoLink
@@ -81,12 +82,12 @@ projects =
     , Project
         "regista"
         [ "An R package for soccer modelling" ]
-        (ProjectUrl "regista")
+        (RelativeUrl [ "regista" ])
         (GithubUrl "regista")
     , Project
         "ggsoccer"
         [ "An R package for plotting event data with ggplot2" ]
-        (ProjectUrl "ggsoccer")
+        (RelativeUrl [ "ggsoccer" ])
         (GithubUrl "ggsoccer")
     , Project
         "soccerstan"
@@ -105,7 +106,7 @@ projects =
         (GithubUrl "duck-debugger")
     , Project
         "Flow solver"
-        ["Solving the 'Flow Free' puzzle game with SAT and Clojure"]
+        [ "Solving the 'Flow Free' puzzle game with SAT and Clojure" ]
         (ProjectUrl "flow-solver.html")
         (GithubUrl "flow-solver")
     , Project
@@ -120,7 +121,7 @@ projects =
         NoLink
     , Project
         "Terminal Snake"
-        ["Play snake in the terminal! A Haskell project"]
+        [ "Play snake in the terminal! A Haskell project" ]
         NoLink
         (GithubUrl "terminal-snake")
     , Project
@@ -152,7 +153,7 @@ view model =
                     [ width (fillPortion 6)
                     , spacing 10
                     ]
-                    [ el [Font.bold, Font.size 32] (text "torvaney.github.io")
+                    [ el [ Font.bold, Font.size 32 ] (text "torvaney.github.io")
                     , paragraph []
                         [ text "Some projects and things that I have done" ]
                     , wrappedRow [ spacing 8 ] <|
@@ -191,7 +192,7 @@ viewProject project =
         , row
             [ height (fillPortion 1), width fill ]
             [ Element.el [ alignLeft ]
-                (viewLink  [ Font.color (gray 0.5) ] "source" project.code)
+                (viewLink [ Font.color (gray 0.5) ] "source" project.code)
             , Element.el [ alignRight ]
                 (viewLink [ Background.color pink, Border.color (gray 0) ] " → " project.link)
             ]
@@ -200,12 +201,14 @@ viewProject project =
 
 viewLink : List (Attribute Msg) -> String -> Link -> Element Msg
 viewLink attrs label link =
-    let defaultAttrs = [ Background.color (gray 1)
-                , Border.color (gray 0.5)
-                , Border.rounded 10
-                , Border.width 1
-                , padding 5
-                ]
+    let
+        defaultAttrs =
+            [ Background.color (gray 1)
+            , Border.color (gray 0.5)
+            , Border.rounded 10
+            , Border.width 1
+            , padding 5
+            ]
     in
     case link of
         NoLink ->
@@ -223,6 +226,9 @@ getUrl link =
         ProjectUrl x ->
             Url.Builder.relative [ "projects", x ] []
 
+        RelativeUrl xs ->
+            Url.Builder.relative xs []
+
         GithubUrl x ->
             Url.Builder.crossOrigin "https://github.com" [ "torvaney", x ] []
 
@@ -236,6 +242,7 @@ getUrl link =
 
 pink =
     rgb 1 0.9 0.9
+
 
 gray x =
     rgb x x x
