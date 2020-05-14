@@ -1,2 +1,2 @@
-pandoc -c src/static/style/home.css -s src/md/home.md -o index.html
+elm make src/elm/Home.elm
 pandoc -c ../src/static/style/flow-solver.css -s src/md/flow-solver.md -o projects/flow-solver.html
