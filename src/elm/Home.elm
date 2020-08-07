@@ -134,6 +134,11 @@ projects =
         [ "A 2-player game in which the starting player can only win if the opponent makes a mistake" ]
         (ProjectUrl "wolf-and-hare.html")
         (GithubUrl "wolf-and-hare")
+    , Project
+        "Ottolenghi recipe generator"
+        [ "Generate ingredient combinations that would make Ottolenghi proud." ]
+        (ProjectUrl "yottolenghi-generator.html")
+        (GithubUrl "yottolenghi-generator")
     ]
 
 
