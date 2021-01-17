@@ -164,8 +164,6 @@ In order to convert a given Flow Free level to SAT, we must come up with a set o
 
 ### Variables
 
-[Note about modelling the edges]
-
 For example, in a 3-colour map, edge _i_ may be associated with three separate variables:
 
 * _i_ is blue
