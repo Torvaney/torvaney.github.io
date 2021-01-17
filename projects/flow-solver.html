@@ -1,179 +1,309 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>Torvaney | Flow Free: A SATisfying solution</title>
   <style>
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+    code {
+      white-space: pre-wrap;
+    }
+
+    span.smallcaps {
+      font-variant: small-caps;
+    }
+
+    span.underline {
+      text-decoration: underline;
+    }
+
+    div.column {
+      display: inline-block;
+      vertical-align: top;
+      width: 50%;
+    }
   </style>
   <link rel="stylesheet" href="../src/static/style/flow-solver.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
+
 <body>
-<header id="title-block-header">
-<h1 class="title">Flow Free: A SATisfying solution</h1>
-</header>
-<p>A solver for the Flow Free puzzle game using Clojure and SAT.</p>
-<p><br></p>
-<p><img src="../src/static/img/flow-solver/before-and-after.png" class="fat"/></p>
-<p><br></p>
-<p>Find the code <a href="https://github.com/Torvaney/flow-solver">on github</a>.</p>
-<p><marquee behavior="scroll" direction="left" scrollamount="1" class="red">————</marquee> <marquee behavior="scroll" direction="left" scrollamount="2" class="blue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="1" class="green">————-</marquee></p>
-<h2 id="overview">Overview</h2>
-<p>On a recent holiday, I found out that the friend I was travelling with plays this game a lot. A lot as in <em>every day for the past few years</em>. And to be fair, I can see the appeal (to an extent…). It’s a pleasant game, and there is a feeling of satisfaction that comes with solving one of the game’s puzzles.</p>
-<p>But wouldn’t it be more satisfying if we could find a solution to <em>all</em> Flow Free maps?</p>
-<p>This blog explores one way to do this using <a href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Boolean Satisfiability</a> (SAT).</p>
-<h3 id="so-what-is-flow-free-anyway">So, what is Flow Free anyway?</h3>
-<p>The core mechanics of the game are pretty simple<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. At each level, you are presented with a map with pairs of coloured dots occupying some cells:</p>
-<p><br></p>
-<p><img src="../src/static/img/flow-solver/flow-free-puzzle.png" class="skinny"/></p>
-<p style="text-align: center">
-Screenshot from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
-</p>
-<p><br></p>
-<p>This usually (although not always) takes the form of a square grid. As you progress through the game, the levels get harder by either increasing the size of the map, and/or increasing the number of coloured dot pairs.</p>
-<p>The goal of the game is to connect the dots with pipes that can move to adjacent cells, such that every cell is filled:</p>
-<p><br></p>
-<p><img src="../src/static/img/flow-solver/flow-free-solution.gif" class="skinny"/></p>
-<p style="text-align: center">
-Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
-</p>
-<p><br></p>
-<p>So far, so intuitive.</p>
-<p>However, in order to pass the puzzle off to a computer to solve, we need to represent the puzzle as data.</p>
-<p><marquee behavior="scroll" direction="right" scrollamount="2" class="pink">————-</marquee> <marquee behavior="scroll" direction="left" scrollamount="1" class="orange">———–</marquee> <marquee behavior="scroll" direction="right" scrollamount="1" class="yellow">————</marquee></p>
-<h2 id="representing-the-problem">Representing the problem</h2>
-<p>Perhaps the most obvious way to think about the puzzle is as it is displayed in that app. Namely as an array in which each cell takes a colour. The goal of the puzzle is then to find the correct (more on this later) colour for each cell.</p>
-<p>This is a fine approach, and will work for the examples we’ve seen so far. However, it is not generic enough to handle <em>everything</em> that Flow Free has to offer.</p>
-<p>The Flow Free app comes with a range of additional maze layouts, some of which would be cumbersome to store in a simple array layout. These can be grouped according to a few key characteristics:</p>
-<h4 id="alternate-shapes">Alternate shapes</h4>
-<div class="img-row">
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/inkblot.jpeg" style="width:100%"/></p>
-</div>
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/worms.jpeg" style="width:100%"/></p>
-</div>
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/amoeba.jpeg" style="width:100%"/></p>
-</div>
-</div>
-<h4 id="additional-connections">Additional connections</h4>
-<div class="img-row">
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/bridges.jpeg" style="width:100%"/></p>
-</div>
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/hexes.jpeg" style="width:100%"/></p>
-</div>
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/warps.jpeg" style="width:100%"/></p>
-</div>
-</div>
-<h4 id="walls-blocked-connections">Walls (blocked connections)</h4>
-<div class="img-row">
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/courtyard.jpeg" style="width:100%"/></p>
-</div>
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/star-field.jpeg" style="width:100%"/></p>
-</div>
-<div class="img-column">
-<p><img src="../src/static/img/flow-solver/courtyard-spin.jpeg" style="width:100%"/></p>
-</div>
-</div>
-<p><br></p>
-<p>Or, of course, some combination of the three:</p>
-<p><img src="../src/static/img/flow-solver/combination.jpeg" class="skinny"/></p>
-<p>So what we need is something that can handle these cases as well as the standard square map.</p>
-<h3 id="graphs-all-the-way-down">Graphs all the way down</h3>
-<p>One way of representing any given Flow Free puzzle is a <a href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</a><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.</p>
-<p>Representing a puzzle map as a graph is relatively straighforward. Each cell is represented by a node in the graph. If a pipe can move from one cell to another, then those two cells will be connected by an edge.</p>
-<p>We also mark out which cells are “terminal” cells, where flows must start and end. These are marked by a coloured circle in the app’s display.</p>
-<p>For example, for a square map this looks like:</p>
-<p><img src="../src/static/img/flow-solver/7-by-7-to-graph.png" class="fat"/></p>
-<p>However, this also works for the other variants. For example, puzzles with additional connections, like this warp puzzle simply require an additional edge:</p>
-<p><img src="../src/static/img/flow-solver/warps-to-graph.png" class="fat"/></p>
-<p>Or in the case of the “bridge” puzzles, we would have to split any bridge cells into 2 nodes. One with the horizontal connections and the other with the vertical connections. For walls or blocked connections, we would <em>remove</em> edges. While with alternate shapes, we would have to employ some combination of adding/removing nodes and edges, depending on the exact map.</p>
-<p><marquee behavior="scroll" direction="left" scrollamount="1" class="green">————</marquee> <marquee behavior="scroll" direction="right" scrollamount="2" class="blue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="2" class="skyblue">————-</marquee></p>
-<h2 id="solving-the-problem">Solving the problem</h2>
-<p>As I have alluded to already, one convenient way to solve a puzzle like this is reduction to Boolean Satisfiability, or SAT. According to <a href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Wikipedia</a>, SAT</p>
-<blockquote>
-<p>… asks whether the variables of a given Boolean formula can be consistently replaced by the values TRUE or FALSE in such a way that the formula evaluates to TRUE. If this is the case, the formula is called satisfiable.</p>
-</blockquote>
-<p>This is useful because this particular problem is very well studied, and as a result, there are many extremely effective off-the-shelf libraries for solving SAT problems. So instead of having to write our own solution from scratch, we can instead convert this problem into a Boolean formula, and pass it off to a pre-existing solver.</p>
-<p>In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for SAT, such that the solved expression (i.e. all the variables are set to “true” or “false”, and all the constraints evaluate to “true”) will give us a valid puzzle solution<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
-<h3 id="variables">Variables</h3>
-<p>For example, in a 3-colour map, edge <em>i</em> may be associated with three separate variables:</p>
-<ul>
-<li><em>i</em> is blue</li>
-<li><em>i</em> is red</li>
-<li><em>i</em> is green</li>
-</ul>
-<p>Of course, only one of these can be true, which brings us neatly to …</p>
-<h3 id="constraints">Constraints</h3>
-<h4 id="each-edge-must-have-exactly-one-colour">Each edge must have <strong>exactly one</strong> colour</h4>
-<p>As mentioned, this constraint follows on naturally from the variable definition. It may seem obvious but we still need to make it explicit. So for edge <em>i</em>, we get an expression like:</p>
-<ul>
-<li>(<em>i</em> is blue) and (<em>i</em> is not green) and (<em>i</em> is not red), or</li>
-<li>(<em>i</em> is green) and (<em>i</em> is not blue) and (<em>i</em> is not red), or</li>
-<li>(<em>i</em> is red) and (<em>i</em> is not green) and (<em>i</em> is not blue), or</li>
-</ul>
-<h4 id="connecting-nodes-must-have-exactly-two-coloured-edges-of-the-same-colour">Connecting nodes must have <strong>exactly two</strong> coloured edges of the <strong>same colour</strong></h4>
-<p>Edges in the graph represent connections between cells in the puzzle. This constraint represents the fact that each empty (“connecting”) cell must have a pipe flowing in and out of it. This constraint ensures that all the map gets filled.</p>
-<h4 id="terminal-nodes-must-have-exactly-one-coloured-edge">Terminal nodes must have <strong>exactly one</strong> coloured edge</h4>
-<p>The rationale here is similar to that of connecting cells. However, by nature terminal cells must be connected to only <em>one</em> other cell, rather than two. This constraint ensures that pipes actually connect to their start/end points (and go no further).</p>
-<h3 id="solution">Solution</h3>
-<p>Having represented our problem in this way, we can hand it off to a SAT solver and receive our solution (if one exists):</p>
-<p><br></p>
-<p><img src="../src/static/img/flow-solver/7-by-7-graph-solved.png" class="chubby"/></p>
-<p><br></p>
-<p><marquee behavior="scroll" direction="right" scrollamount="2" class="pink">————</marquee> <marquee behavior="scroll" direction="left" scrollamount="2" class="skyblue">—————</marquee> <marquee behavior="scroll" direction="right" scrollamount="1" class="yellow">————-</marquee></p>
-<h2 id="wrap-up-technical-notes">Wrap up &amp; technical notes</h2>
-<p>As I mentioned above, the code for this solver is available <a href="https://github.com/Torvaney/flow-solver">on github</a>. This is written in Clojure and uses the <a href="https://github.com/Engelberg/rolling-stones">rolling-stones</a> library (an interface to <a href="https://www.sat4j.org">sat4j</a>) to solve a given puzzle, returning “before” and “after” images similar to those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows you to use arbitrary clojure data structures as your SAT variables. Likewise the <a href="https://github.com/Engelberg/ubergraph">ubergraph</a> library<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> made working with and visualising the graphs extremely painless, which was a nice surprise. See the project README for more instructions on running the solver.</p>
-<p>Although I used SAT to solve this, there are a few other approaches that I think could prove interesting. One such approach is using a genetic algorithm instead of SAT to find the edge colours. As far as I can see, by converting the constraints to a fitness function, a very similar approach could find success. Although I think this would be significantly less convenient and efficient than SAT.</p>
-<p>There is also a website, <a href="https://flowfreesolutions.com">flowfreesolutions.com</a>, that lists solutions to every level of Flow Free. This got me thinking that it’d be an interesting (if quite different) project to try and create a solver using supervised learning methods. After all, it would be relatively trivial to generate a training set of valid mazes automatically.</p>
-<hr />
-<h2 id="appendix">Appendix</h2>
-<h3 id="prior-work">Prior work</h3>
-<p>Since I did this project as part of an attempt to learn a bit more about SAT, I did not do much research beforehand. However, attempting to create a solver for this kind of puzzle is far from unique, and there are plenty of other (generally more impressive) ones floating around:</p>
-<ul>
-<li>Aug 2007: <a href="https://www.mathematica-journal.com/data/uploads/2007/08/NumberLink.pdf">“Beyond Sudoku”</a>, an article in The Mathematica Journal inviting readers to send in their solutions for some Numberlink puzzles to win a prize. I suspect I may have missed the boat on this one.</li>
-<li>Apr 2012: A <a href="https://www.mdpi.com/1999-4893/5/2/176">general solver</a> for this type of puzzle using ZDDs (no, I hadn’t heard of ZDDs either).</li>
-<li>Nov 2013: A <a href="http://bach.istc.kobe-u.ac.jp/copris/puzzles/numberlink/">Numberlink solver</a> Scala (using <a href="http://bach.istc.kobe-u.ac.jp/copris/">Copris</a>)</li>
-<li>May 2015: A <a href="https://www.jstage.jst.go.jp/article/ipsjjip/23/3/23_239/_article/-char/ja/">proof that Flow Free is NP Complete</a></li>
-<li>Aug 2016: <a href="https://mzucker.github.io/2016/08/28/flow-solver.html">A fast, automated solver written in C</a> by Matt Zucker, looking at the puzzle as a <a href="https://en.wikipedia.org/wiki/Shortest_path_problem">shortest-path</a> problem.</li>
-<li>Jan 2017: A <a href="https://puzzling.stackexchange.com/questions/47685/strategy-for-solving-flow-free-puzzles">puzzling.stackexchange.com discussion</a> on the strategies for solving Flow Free levels. The top answer suggests a few heuristics to help solve the puzzles.</li>
-<li>Apr 2017: A <a href="https://github.com/lukegarbutt/Flow-Free-Solver">python solver</a> that uses heuristics to solve each level. This comes with a <a href="https://www.youtube.com/watch?v=zbH6ZhmLx3c&amp;list=PLsYctZrw5bWte2DOCCxhUF9Nzr_z_fZK6">video series</a> explaining the solver. Another cool thing about this project is that it takes the screen of the phone or device running Flow Free as its input.</li>
-</ul>
-<p>Some additional entries from 2016 and earlier can be found in <a href="https://mzucker.github.io/2016/08/28/flow-solver.html#theend">Matt Zucker’s post</a>, which I have pasted below:</p>
-<ul>
-<li>Jun 2011: just a <a href="https://www.youtube.com/watch?v=ghEK_79owaU">video</a> of a solver proceeding at a leisurely pace, couldn’t find source.</li>
-<li>Nov 2011: <a href="https://github.com/imos/Puzzle/tree/master/NumberLink">solver in C++</a> for a related puzzle, looks like a standard recursive backtracker.</li>
-<li>Aug 2012: <a href="https://github.com/DeeNewcum/FlowFree">solver in Perl</a>, mothballed, doesn’t work, but README has a link to an interesting paper.</li>
-<li>Oct 2012: <a href="https://github.com/JamesDunne/freeflow-solver">solver in C#</a>, appears not to work based upon final commit message.</li>
-<li>Feb 2013: chatting about designing solvers in a <a href="http://www.cplusplus.com/forum/general/93467/">C++ forum</a>.</li>
-<li>Jul 2013: <a href="https://www.r-bloggers.com/using-r-and-integer-programming-to-find-solutions-to-flowfree-game-boards/">solver in R</a>, framed as integer programming.2</li>
-<li>Sep 2013: <a href="https://github.com/taylorjg/FlowFreeDlx">two</a> <a href="https://github.com/taylorjg/FlowFreeSolverWpf">solvers</a> from the same programmer, both in C#, both use DLX; author notes long solve times for large grids.</li>
-<li>Feb 2014: solver as <a href="http://cs.mwsu.edu/~terry/?route=/courses/3013/content/assignments/page/Program1.md">coding assignment</a> in a C++ class, yikes.</li>
-<li>Mar 2014: <a href="http://stackoverflow.com/questions/23622068/algorithm-for-solving-flow-free-game">StackOverflow chat</a> on designing a solver, top answer suggests reducing to SAT.3</li>
-<li>Feb 2016: <a href="https://github.com/GameAutomators/Flow-Free">solver in MATLAB</a> using backtracking; very slow on puzzles &gt; 10x10 but it does live image capture and there’s a cool YouTube demo.</li>
-</ul>
-<section class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>In fact, in the process of writing this post, I discovered that the origins of the game go back to <a href="https://en.wikipedia.org/wiki/Numberlink">1897 as “Numberlink”</a><a href="#fnref1" class="footnote-back">↩</a></p></li>
-<li id="fn2"><p>After all, <a href="https://gephi.wordpress.com/2011/10/12/everything-looks-like-a-graph-but-almost-nothing-should-ever-be-drawn-as-one/">everything is a graph</a>, even if we’re not sure of the best way <a href="https://dhs.stanford.edu/algorithmic-literacy/everything-is-a-graph-and-drawing-it-as-such-is-always-the-best-thing-to-do/">to draw them</a>.<a href="#fnref2" class="footnote-back">↩</a></p></li>
-<li id="fn3"><p>A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think <a href="https://www.youtube.com/watch?v=XGl-TumKD98">this talk</a> does a good job of walking through this at a slower pace than I have done here. I’ve also shamelessly ripped off the tile pun for this blog post.<a href="#fnref3" class="footnote-back">↩</a></p></li>
-<li id="fn4"><p>As it happens, both rolling-stones and ubergraph have the same author!<a href="#fnref4" class="footnote-back">↩</a></p></li>
-</ol>
-</section>
+  <header id="title-block-header">
+    <h1 class="title">Flow Free: A SATisfying solution</h1>
+  </header>
+  <p>A solver for the Flow Free puzzle game using Clojure and SAT.</p>
+  <p><br></p>
+  <p><img src="../src/static/img/flow-solver/before-and-after.png" class="fat" /></p>
+  <p><br></p>
+  <p>Find the code <a href="https://github.com/Torvaney/flow-solver">on github</a>.</p>
+  <p>
+    <marquee behavior="scroll" direction="left" scrollamount="1" class="red">————</marquee>
+    <marquee behavior="scroll" direction="left" scrollamount="2" class="blue">—————</marquee>
+    <marquee behavior="scroll" direction="right" scrollamount="1" class="green">————-</marquee>
+  </p>
+  <h2 id="overview">Overview</h2>
+  <p>On a recent holiday, I found out that the friend I was travelling with plays this game a lot. A lot as in <em>every
+      day for the past few years</em>. And to be fair, I can see the appeal (to an extent…). It’s a pleasant game, and
+    there is a feeling of satisfaction that comes with solving one of the game’s puzzles.</p>
+  <p>But wouldn’t it be more satisfying if we could find a solution to <em>all</em> Flow Free maps?</p>
+  <p>This blog explores one way to do this using <a
+      href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Boolean Satisfiability</a> (SAT).</p>
+  <h3 id="so-what-is-flow-free-anyway">So, what is Flow Free anyway?</h3>
+  <p>The core mechanics of the game are pretty simple<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.
+    At each level, you are presented with a map with pairs of coloured dots occupying some cells:</p>
+  <p><br></p>
+  <p><img src="../src/static/img/flow-solver/flow-free-puzzle.png" class="skinny" /></p>
+  <p style="text-align: center">
+    Screenshot from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
+  </p>
+  <p><br></p>
+  <p>This usually (although not always) takes the form of a square grid. As you progress through the game, the levels
+    get harder by either increasing the size of the map, and/or increasing the number of coloured dot pairs.</p>
+  <p>The goal of the game is to connect the dots with pipes that can move to adjacent cells, such that every cell is
+    filled:</p>
+  <p><br></p>
+  <p><img src="../src/static/img/flow-solver/flow-free-solution.gif" class="skinny" /></p>
+  <p style="text-align: center">
+    Gameplay from <a href="https://youtu.be/TCnQPsExQuY?t=30">youtube</a>.
+  </p>
+  <p><br></p>
+  <p>So far, so intuitive.</p>
+  <p>However, in order to pass the puzzle off to a computer to solve, we need to represent the puzzle as data.</p>
+  <p>
+    <marquee behavior="scroll" direction="right" scrollamount="2" class="pink">————-</marquee>
+    <marquee behavior="scroll" direction="left" scrollamount="1" class="orange">———–</marquee>
+    <marquee behavior="scroll" direction="right" scrollamount="1" class="yellow">————</marquee>
+  </p>
+  <h2 id="representing-the-problem">Representing the problem</h2>
+  <p>Perhaps the most obvious way to think about the puzzle is as it is displayed in that app. Namely as an array in
+    which each cell takes a colour. The goal of the puzzle is then to find the correct (more on this later) colour for
+    each cell.</p>
+  <p>This is a fine approach, and will work for the examples we’ve seen so far. However, it is not generic enough to
+    handle <em>everything</em> that Flow Free has to offer.</p>
+  <p>The Flow Free app comes with a range of additional maze layouts, some of which would be cumbersome to store in a
+    simple array layout. These can be grouped according to a few key characteristics:</p>
+  <h4 id="alternate-shapes">Alternate shapes</h4>
+  <div class="img-row">
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/inkblot.jpeg" style="width:100%" /></p>
+    </div>
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/worms.jpeg" style="width:100%" /></p>
+    </div>
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/amoeba.jpeg" style="width:100%" /></p>
+    </div>
+  </div>
+  <h4 id="additional-connections">Additional connections</h4>
+  <div class="img-row">
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/bridges.jpeg" style="width:100%" /></p>
+    </div>
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/hexes.jpeg" style="width:100%" /></p>
+    </div>
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/warps.jpeg" style="width:100%" /></p>
+    </div>
+  </div>
+  <h4 id="walls-blocked-connections">Walls (blocked connections)</h4>
+  <div class="img-row">
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/courtyard.jpeg" style="width:100%" /></p>
+    </div>
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/star-field.jpeg" style="width:100%" /></p>
+    </div>
+    <div class="img-column">
+      <p><img src="../src/static/img/flow-solver/courtyard-spin.jpeg" style="width:100%" /></p>
+    </div>
+  </div>
+  <p><br></p>
+  <p>Or, of course, some combination of the three:</p>
+  <p><img src="../src/static/img/flow-solver/combination.jpeg" class="skinny" /></p>
+  <p>So what we need is something that can handle these cases as well as the standard square map.</p>
+  <h3 id="graphs-all-the-way-down">Graphs all the way down</h3>
+  <p>One way of representing any given Flow Free puzzle is a <a
+      href="https://en.wikipedia.org/wiki/Graph_(abstract_data_type)">graph</a><a href="#fn2" class="footnote-ref"
+      id="fnref2"><sup>2</sup></a>.</p>
+  <p>Representing a puzzle map as a graph is relatively straighforward. Each cell is represented by a node in the graph.
+    If a pipe can move from one cell to another, then those two cells will be connected by an edge.</p>
+  <p>We also mark out which cells are “terminal” cells, where flows must start and end. These are marked by a coloured
+    circle in the app’s display.</p>
+  <p>For example, for a square map this looks like:</p>
+  <p><img src="../src/static/img/flow-solver/7-by-7-to-graph.png" class="fat" /></p>
+  <p>However, this also works for the other variants. For example, puzzles with additional connections, like this warp
+    puzzle simply require an additional edge:</p>
+  <p><img src="../src/static/img/flow-solver/warps-to-graph.png" class="fat" /></p>
+  <p>Or in the case of the “bridge” puzzles, we would have to split any bridge cells into 2 nodes. One with the
+    horizontal connections and the other with the vertical connections. For walls or blocked connections, we would
+    <em>remove</em> edges. While with alternate shapes, we would have to employ some combination of adding/removing
+    nodes and edges, depending on the exact map.</p>
+  <p>
+    <marquee behavior="scroll" direction="left" scrollamount="1" class="green">————</marquee>
+    <marquee behavior="scroll" direction="right" scrollamount="2" class="blue">—————</marquee>
+    <marquee behavior="scroll" direction="right" scrollamount="2" class="skyblue">————-</marquee>
+  </p>
+  <h2 id="solving-the-problem">Solving the problem</h2>
+  <p>As I have alluded to already, one convenient way to solve a puzzle like this is reduction to Boolean
+    Satisfiability, or SAT. According to <a
+      href="https://en.wikipedia.org/wiki/Boolean_satisfiability_problem">Wikipedia</a>, SAT</p>
+  <blockquote>
+    <p>… asks whether the variables of a given Boolean formula can be consistently replaced by the values TRUE or FALSE
+      in such a way that the formula evaluates to TRUE. If this is the case, the formula is called satisfiable.</p>
+  </blockquote>
+  <p>This is useful because this particular problem is very well studied, and as a result, there are many extremely
+    effective off-the-shelf libraries for solving SAT problems. So instead of having to write our own solution from
+    scratch, we can instead convert this problem into a Boolean formula, and pass it off to a pre-existing solver.</p>
+  <p>In order to convert a given Flow Free level to SAT, we must come up with a set of variables and constraints for
+    SAT, such that the solved expression (i.e. all the variables are set to “true” or “false”, and all the constraints
+    evaluate to “true”) will give us a valid puzzle solution<a href="#fn3" class="footnote-ref"
+      id="fnref3"><sup>3</sup></a>.</p>
+  <h3 id="variables">Variables</h3>
+  <p>For example, in a 3-colour map, edge <em>i</em> may be associated with three separate variables:</p>
+  <ul>
+    <li><em>i</em> is blue</li>
+    <li><em>i</em> is red</li>
+    <li><em>i</em> is green</li>
+  </ul>
+  <p>Of course, only one of these can be true, which brings us neatly to …</p>
+  <h3 id="constraints">Constraints</h3>
+  <h4 id="each-edge-must-have-exactly-one-colour">Each edge must have <strong>exactly one</strong> colour</h4>
+  <p>As mentioned, this constraint follows on naturally from the variable definition. It may seem obvious but we still
+    need to make it explicit. So for edge <em>i</em>, we get an expression like:</p>
+  <ul>
+    <li>(<em>i</em> is blue) and (<em>i</em> is not green) and (<em>i</em> is not red), or</li>
+    <li>(<em>i</em> is green) and (<em>i</em> is not blue) and (<em>i</em> is not red), or</li>
+    <li>(<em>i</em> is red) and (<em>i</em> is not green) and (<em>i</em> is not blue), or</li>
+  </ul>
+  <h4 id="connecting-nodes-must-have-exactly-two-coloured-edges-of-the-same-colour">Connecting nodes must have
+    <strong>exactly two</strong> coloured edges of the <strong>same colour</strong></h4>
+  <p>Edges in the graph represent connections between cells in the puzzle. This constraint represents the fact that each
+    empty (“connecting”) cell must have a pipe flowing in and out of it. This constraint ensures that all the map gets
+    filled.</p>
+  <h4 id="terminal-nodes-must-have-exactly-one-coloured-edge">Terminal nodes must have <strong>exactly one</strong>
+    coloured edge</h4>
+  <p>The rationale here is similar to that of connecting cells. However, by nature terminal cells must be connected to
+    only <em>one</em> other cell, rather than two. This constraint ensures that pipes actually connect to their
+    start/end points (and go no further).</p>
+  <h3 id="solution">Solution</h3>
+  <p>Having represented our problem in this way, we can hand it off to a SAT solver and receive our solution (if one
+    exists):</p>
+  <p><br></p>
+  <p><img src="../src/static/img/flow-solver/7-by-7-graph-solved.png" class="chubby" /></p>
+  <p><br></p>
+  <p>
+    <marquee behavior="scroll" direction="right" scrollamount="2" class="pink">————</marquee>
+    <marquee behavior="scroll" direction="left" scrollamount="2" class="skyblue">—————</marquee>
+    <marquee behavior="scroll" direction="right" scrollamount="1" class="yellow">————-</marquee>
+  </p>
+  <h2 id="wrap-up-technical-notes">Wrap up &amp; technical notes</h2>
+  <p>As I mentioned above, the code for this solver is available <a href="https://github.com/Torvaney/flow-solver">on
+      github</a>. This is written in Clojure and uses the <a
+      href="https://github.com/Engelberg/rolling-stones">rolling-stones</a> library (an interface to <a
+      href="https://www.sat4j.org">sat4j</a>) to solve a given puzzle, returning “before” and “after” images similar to
+    those shown at the top of this post. This proved to be a particularly nice way to go because Rolling Stones allows
+    you to use arbitrary clojure data structures as your SAT variables. Likewise the <a
+      href="https://github.com/Engelberg/ubergraph">ubergraph</a> library<a href="#fn4" class="footnote-ref"
+      id="fnref4"><sup>4</sup></a> made working with and visualising the graphs extremely painless, which was a nice
+    surprise. See the project README for more instructions on running the solver.</p>
+  <p>Although I used SAT to solve this, there are a few other approaches that I think could prove interesting. One such
+    approach is using a genetic algorithm instead of SAT to find the edge colours. As far as I can see, by converting
+    the constraints to a fitness function, a very similar approach could find success. Although I think this would be
+    significantly less convenient and efficient than SAT.</p>
+  <p>There is also a website, <a href="https://flowfreesolutions.com">flowfreesolutions.com</a>, that lists solutions to
+    every level of Flow Free. This got me thinking that it’d be an interesting (if quite different) project to try and
+    create a solver using supervised learning methods. After all, it would be relatively trivial to generate a training
+    set of valid mazes automatically.</p>
+  <hr />
+  <h2 id="appendix">Appendix</h2>
+  <h3 id="prior-work">Prior work</h3>
+  <p>Since I did this project as part of an attempt to learn a bit more about SAT, I did not do much research
+    beforehand. However, attempting to create a solver for this kind of puzzle is far from unique, and there are plenty
+    of other (generally more impressive) ones floating around:</p>
+  <ul>
+    <li>Aug 2007: <a href="https://www.mathematica-journal.com/data/uploads/2007/08/NumberLink.pdf">“Beyond Sudoku”</a>,
+      an article in The Mathematica Journal inviting readers to send in their solutions for some Numberlink puzzles to
+      win a prize. I suspect I may have missed the boat on this one.</li>
+    <li>Apr 2012: A <a href="https://www.mdpi.com/1999-4893/5/2/176">general solver</a> for this type of puzzle using
+      ZDDs (no, I hadn’t heard of ZDDs either).</li>
+    <li>Nov 2013: A <a href="http://bach.istc.kobe-u.ac.jp/copris/puzzles/numberlink/">Numberlink solver</a> Scala
+      (using <a href="http://bach.istc.kobe-u.ac.jp/copris/">Copris</a>)</li>
+    <li>May 2015: A <a href="https://www.jstage.jst.go.jp/article/ipsjjip/23/3/23_239/_article/-char/ja/">proof that
+        Flow Free is NP Complete</a></li>
+    <li>Aug 2016: <a href="https://mzucker.github.io/2016/08/28/flow-solver.html">A fast, automated solver written in
+        C</a> by Matt Zucker, looking at the puzzle as a <a
+        href="https://en.wikipedia.org/wiki/Shortest_path_problem">shortest-path</a> problem.</li>
+    <li>Jan 2017: A <a
+        href="https://puzzling.stackexchange.com/questions/47685/strategy-for-solving-flow-free-puzzles">puzzling.stackexchange.com
+        discussion</a> on the strategies for solving Flow Free levels. The top answer suggests a few heuristics to help
+      solve the puzzles.</li>
+    <li>Apr 2017: A <a href="https://github.com/lukegarbutt/Flow-Free-Solver">python solver</a> that uses heuristics to
+      solve each level. This comes with a <a
+        href="https://www.youtube.com/watch?v=zbH6ZhmLx3c&amp;list=PLsYctZrw5bWte2DOCCxhUF9Nzr_z_fZK6">video series</a>
+      explaining the solver. Another cool thing about this project is that it takes the screen of the phone or device
+      running Flow Free as its input.</li>
+  </ul>
+  <p>Some additional entries from 2016 and earlier can be found in <a
+      href="https://mzucker.github.io/2016/08/28/flow-solver.html#theend">Matt Zucker’s post</a>, which I have pasted
+    below:</p>
+  <ul>
+    <li>Jun 2011: just a <a href="https://www.youtube.com/watch?v=ghEK_79owaU">video</a> of a solver proceeding at a
+      leisurely pace, couldn’t find source.</li>
+    <li>Nov 2011: <a href="https://github.com/imos/Puzzle/tree/master/NumberLink">solver in C++</a> for a related
+      puzzle, looks like a standard recursive backtracker.</li>
+    <li>Aug 2012: <a href="https://github.com/DeeNewcum/FlowFree">solver in Perl</a>, mothballed, doesn’t work, but
+      README has a link to an interesting paper.</li>
+    <li>Oct 2012: <a href="https://github.com/JamesDunne/freeflow-solver">solver in C#</a>, appears not to work based
+      upon final commit message.</li>
+    <li>Feb 2013: chatting about designing solvers in a <a href="http://www.cplusplus.com/forum/general/93467/">C++
+        forum</a>.</li>
+    <li>Jul 2013: <a
+        href="https://www.r-bloggers.com/using-r-and-integer-programming-to-find-solutions-to-flowfree-game-boards/">solver
+        in R</a>, framed as integer programming.2</li>
+    <li>Sep 2013: <a href="https://github.com/taylorjg/FlowFreeDlx">two</a> <a
+        href="https://github.com/taylorjg/FlowFreeSolverWpf">solvers</a> from the same programmer, both in C#, both use
+      DLX; author notes long solve times for large grids.</li>
+    <li>Feb 2014: solver as <a
+        href="http://cs.mwsu.edu/~terry/?route=/courses/3013/content/assignments/page/Program1.md">coding assignment</a>
+      in a C++ class, yikes.</li>
+    <li>Mar 2014: <a
+        href="http://stackoverflow.com/questions/23622068/algorithm-for-solving-flow-free-game">StackOverflow chat</a>
+      on designing a solver, top answer suggests reducing to SAT.3</li>
+    <li>Feb 2016: <a href="https://github.com/GameAutomators/Flow-Free">solver in MATLAB</a> using backtracking; very
+      slow on puzzles &gt; 10x10 but it does live image capture and there’s a cool YouTube demo.</li>
+  </ul>
+  <section class="footnotes">
+    <hr />
+    <ol>
+      <li id="fn1">
+        <p>In fact, in the process of writing this post, I discovered that the origins of the game go back to <a
+            href="https://en.wikipedia.org/wiki/Numberlink">1897 as “Numberlink”</a><a href="#fnref1"
+            class="footnote-back">↩</a></p>
+      </li>
+      <li id="fn2">
+        <p>After all, <a
+            href="https://gephi.wordpress.com/2011/10/12/everything-looks-like-a-graph-but-almost-nothing-should-ever-be-drawn-as-one/">everything
+            is a graph</a>, even if we’re not sure of the best way <a
+            href="https://dhs.stanford.edu/algorithmic-literacy/everything-is-a-graph-and-drawing-it-as-such-is-always-the-best-thing-to-do/">to
+            draw them</a>.<a href="#fnref2" class="footnote-back">↩</a></p>
+      </li>
+      <li id="fn3">
+        <p>A common task used to demonstrate this is solving a sudoku puzzle with SAT. I think <a
+            href="https://www.youtube.com/watch?v=XGl-TumKD98">this talk</a> does a good job of walking through this at
+          a slower pace than I have done here. I’ve also shamelessly ripped off the tile pun for this blog post.<a
+            href="#fnref3" class="footnote-back">↩</a></p>
+      </li>
+      <li id="fn4">
+        <p>As it happens, both rolling-stones and ubergraph have the same author!<a href="#fnref4"
+            class="footnote-back">↩</a></p>
+      </li>
+    </ol>
+  </section>
 </body>
+
 </html>
