@@ -13,6 +13,13 @@
         integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
 
     <style>
+        /* Disable text selection */
+        .no-select {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+        }
+
         /* Crop images to size */
         .crop {
             object-fit: contain;
@@ -38,36 +45,11 @@
 <body>
 
     <header>
-        <div class="collapse bg-dark" id="navbarHeader">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-8 col-md-7 py-4">
-                        <h4 class="text-white">About</h4>
-                        <p class="text-muted">TODO lorem ipsum etc etc lorem ipsum etc etc lorem ipsum etc etc lorem
-                            ipsum etc etc lorem ipsum etc etc lorem ipsum etc etc </p>
-                    </div>
-                    <div class="col-sm-4 offset-md-1 py-4">
-                        <h4 class="text-white">Contact</h4>
-                        <ul class="list-unstyled">
-                            <li><a href="https://twitter.com/torvaney" class="text-white">Twitter</a></li>
-                            <li><a href="https://github.com/torvaney" class="text-white">Github</a></li>
-                            <li><a href="https://www.linkedin.com/in/benjamin-torvaney-aa564817b/"
-                                    class="text-white">LinkedIn</a></li>
-                            <!-- <li><a href="#" class="text-white">Email</a></li> -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="navbar navbar-light bg-light shadow-sm">
             <div class="container">
                 <a href="#" class="navbar-brand d-flex align-items-center">
                     <strong>torvaney.github.io</strong>
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader"
-                    aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
             </div>
         </div>
     </header>
@@ -77,6 +59,28 @@
         <div class="album py-5 bg-light">
 
             <div class="container">
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="p-4 mb-3 bg-white rounded shadow-sm">
+                            <h4 class="font-italic">About</h4>
+                            <p class="mb-1">Hello, I'm Ben Torvaney. I am a data scientist based in London, UK.</p>
+                            <p class="mb-1">You can find links to some of my public work and projects below.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-4 mb-3 bg-white rounded shadow-sm">
+                            <h4 class="font-italic">Contact</h4>
+                            <ul class="list-group list-group-flush">
+                                <a class="list-group-item list-group-item-action" href="https://github.com/torvaney">Github</a>
+                                <a class="list-group-item list-group-item-action" href="https://twitter.com/torvaney">Twitter</a>
+                                <a class="list-group-item list-group-item-action" href="https://www.linkedin.com/in/benjamin-torvaney-aa564817b/">Linkedin</a>
+                                <li class="list-group-item"><span class="no-select">Email: </span>contact@statsandsnakeoil.com</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <h1 class="py-1">Football (soccer) projects</h1>
 
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 pb-3">
@@ -205,9 +209,93 @@
                             <div class="card-body">
                                 <h5 class="card-title">How to pick a number from 1-10</h5>
                                 <p class="card-text">
-                                    aka Human RNG. How can we generate uniform random numbers from human suggestions?
+                                    How can we generate uniform random numbers from human suggestions?
                                 </p>
                                 <a href="projects/human-rng.html" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top crop p-2" width="100%" height="250"
+                                role="img" focusable="false" src="src/static/img/home/duck-debugger.png">
+                            </img>
+                            <div class="card-body">
+                                <h5 class="card-title">The Duck Debugger</h5>
+                                <p class="card-text">
+                                    Stuck on a problem? Talk to the duck!
+                                </p>
+                                <a href="projects/duck-debugger.html" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top crop p-2" width="100%" height="250"
+                                role="img" focusable="false" src="src/static/img/home/chaos-game.png">
+                            </img>
+                            <div class="card-body">
+                                <h5 class="card-title">Chaos game</h5>
+                                <p class="card-text">
+                                    Explore interesting patterns arising from some simple rules
+                                </p>
+                                <a href="projects/chaosgame.html" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top crop p-2 background-black" width="100%" height="250"
+                                role="img" focusable="false" src="https://raw.githubusercontent.com/Torvaney/terminal-snake/master/example.gif">
+                            </img>
+                            <div class="card-body">
+                                <h5 class="card-title">Terminal Snake</h5>
+                                <p class="card-text">
+                                    Play snake in the terminal! A Haskell project
+                                </p>
+                                <a href="https://github.com/torvaney/terminal-snake" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top crop p-2" width="100%" height="250"
+                                role="img" focusable="false" src="src/static/img/home/messenger-and-army.png">
+                            </img>
+                            <div class="card-body">
+                                <h5 class="card-title">Messenger and army puzzle</h5>
+                                <p class="card-text">
+                                    Explore a popular puzzle the intuitive way.
+                                </p>
+                                <a href="projects/messenger-army-puzzle.html" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top crop p-2" width="100%" height="250"
+                                role="img" focusable="false" src="src/static/img/home/wolf-and-hare.png">
+                            </img>
+                            <div class="card-body">
+                                <h5 class="card-title">Wolf and Hare</h5>
+                                <p class="card-text">
+                                    A 2-player game in which the starting player can only win if the opponent makes a mistake.
+                                </p>
+                                <a href="projects/wolf-and-hare.html" class="stretched-link"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <img class="card-img-top crop p-2" width="100%" height="250"
+                                role="img" focusable="false" src="src/static/img/home/human-language-model.png">
+                            </img>
+                            <div class="card-body">
+                                <h5 class="card-title">Human language model</h5>
+                                <p class="card-text">
+                                    Test your language model on a given text corpus.
+                                </p>
+                                <a href="projects/human-language-model.html" class="stretched-link"></a>
                             </div>
                         </div>
                     </div>
