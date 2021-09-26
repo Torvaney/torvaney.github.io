@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Personal website for Ben Torvaney">
+    <meta name="author" content="Ben Torvaney">
+    <title>Torvaney | Optimising the T9 keyboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <style>
+        a {
+            color: pink;
+        };
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <a href="../index.html" class="navbar-brand d-flex align-items-center">
+                    <strong>torvaney.github.io</strong>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <div class="py-5 bg-dark">
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-sm-2 col-lg-3 col-xxl-4"></div>
+                    <div class="col-sm-8 col-lg-6 col-xxl-4 text-light">
+                        <h1 class="pb-2">Optimising the T9 keyboard</h1>
+
+                        <h2 class="pt-2">Summary</h2>
+
+                        <ul>
+                            <li>Rearranging the characters on a T9-style keyboard can reduce the number keystrokes per character typed (i.e. increase the typing efficiency of the keyboard)</li>
+                            <li>The improvement is enough for a 6-key layout to achieve similar efficiency to the standard T9 keyboard (8 keys)</li>
+                            <li>xyz</li>
+                        </ul>
+
+                        <h2 class="pt-2">Background</h2>
+
+                        <p>
+                            Recently, I watched this video by Guy Dupont on building a physical version of the T9 keyboard used on feature phones:
+                        </p>
+
+                        <div class="text-center embed-responsive embed-responsive-16by9 my-4">
+                            <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/6cbBSEbwLUI?rel=0" allowfullscreen></iframe>
+                        </div>
+
+                        <p>
+                            In it (at 2:09), he explains that one advantage of a T9 keyboard is that the ratio of keystrokes:characters typed is reasonably close to 1:1
+                            (about 1.07 keystrokes per character according to <a href="https://www.yorku.ca/mack/hcimobile02.html">MacKenzie, I. S. (2002)</a>).
+                        </p>
+
+                        <p>
+                            This got me wondering: could we rearrange the letters on a T9 style keypad to further reduce this ratio?
+                        </p>
+
+                        <h3 class="pt-2">Wait a second, what <i>is</i> T9?</h3>
+
+                        <p>
+                            T9 is a type of keyboard software used on feature phones (phones with a 0-9 keypad) to allow easy typing of text messages.
+                        </p>
+                        <p>
+                            A standard T9 keyboard looks something like this:
+                        </p>
+
+                        <div class="row py-3">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8 text-center">
+                                <img class="rounded-3 img-fluid" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Telephone-keypad2.svg/2560px-Telephone-keypad2.svg.png">
+                                <small>Image from Wikipedia</small>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+
+                        <p>
+                            To type on a T9 keyboard, you press the buttons corresponding to the letters you would like to type,
+                            and the predictive text algorithm will present the most likely interpretation of your keypresses.
+                        </p>
+
+                        <p>
+                            Typically, the '#' key is reserved for scrolling through the different possible options to select your desired word.
+                            For example, the sequence of keypresses '227' is probably "car", and this is what T9 will select (assuming an English dictionary is loaded).
+                            However, if you instead wanted to type "cap", you would need to type an additional '#' (i.e. '227#' in all).
+                        </p>
+
+                        <p>
+                            Helpfully, Guy Dupont has another video going into more information about the T9 algorithm and his implementation in <a href="https://www.youtube.com/watch?v=oHweCPzpFIk">another video.</a>
+                            I enjoyed it and if you're not familiar with the typing experience on feature phones, or if you're curious about the details of such a project, I recommend checking it out.
+                        </p>
+
+                        <h2 class="pt-2">
+                            How to find a better keyboard?
+                        </h2>
+
+                        <p>
+                            Some initial calculations suggest that it's probably not tractable to to solve the problem by brute force.
+                            If my (extremely rusty) combinatorics are right, there are approximately 3x10<sup>29</sup> ways of arranging
+                            26 alphabetical characters onto 8 identical buttons.
+                        </p>
+
+                        <p>
+                            Even if we can evaluate a few thousand keypads per second, we'd be going nowhere very slowly.
+                        </p>
+
+                        <h2 class="pt-2">
+                            Can machine learning help?
+                        </h2>
+
+                        <p>
+                            If we can't find an optimal solution by brute force, maybe we can find an approximately optimal solution by another method?
+                        </p>
+
+                        <p>
+                            Like many side-projects with little real-world, practical use, machine learning is a good fit. Specifically, we can use a <a href="https://en.wikipedia.org/wiki/Genetic_algorithm">genetic algorithm</a>.
+                        </p>
+
+                        <p>
+                            A genetic algorithm is an iterative process. In each iteration, the algorithm takes a set of possible solutions
+                            (in this case, keyboard layouts), selects the best performing ones, then slightly modifies them top create the
+                            set of solutions for the next iteration. Typically, the initial set of solutions is generated randomly.
+                        </p>
+
+                        <p>
+                            To use a genetic algorithm, we need a fitness function to evaluate any potential solutions.
+                            The genetic algorithm will then attempt to find the arrangement of alphabetical characters on the keypad
+                            that minimises this fitness function.
+                        </p>
+
+                        <p>
+                            So in this case, the fitness function is the ratio of keystrokes per character typed.
+                        </p>
+
+                        <p>
+                            To calculate keystrokes per character, we also need a representative body of text to type out.
+                        </p>
+
+                        <h3 class="pt-2">
+                            The data
+                        </h3>
+
+                        <p>
+                            I created train and test sets of text, by taking lines of text from the following books (accessed via Project Gutenberg):
+                        </p>
+                            <ul>
+                                <li>Wizard of Oz</li>
+                                <li>Pride and Predjudice</li>
+                                <li>Frankenstein</li>
+                                <li>A Picture of Dorian Gray</li>
+                                <li>The Mayor of Casterbridge</li>
+                                <li>Jane Eyre</li>
+                                <li>Dubliners</li>
+                                <li>The Great Gatsby</li>
+                            </ul>
+                        <p>
+                          I used half of the lines from these books as training data and the other half as test data, with lines being distributed at random between them.
+                          These books aren't representative of SMS content, but they are easy to access and, I hope, good enough to make a fair comparison between layouts.
+                        </p>
+
+                        <p>
+
+                        </p>
+                            I preprocessed the text by:
+                        </p>
+
+                        <ul>
+                            <li>Removing all punctuation (leaving only alphabetical characters and whitespace)</li>
+                            <li>Converting all characters to lowercase</li>
+                            <li>Removing all proper nouns (well, words starting with an upper case character) to avoid unusual place and character names from having an outsized impact on the results</li>
+                        </ul>
+
+                        <h3 class="pt-2">
+                            The fitness function
+                        </h3>
+
+                        </p>
+                            As mentioned earlier, we need a fitness function to calculate keystrokes per character
+                            on the training text, for a given keypad.
+                        </p>
+
+                        </p>
+                            For this, I wrote a function that would use the training text to:
+                        </p>
+
+                        <ol>
+                            <li>Construct a dictionary of valid words</li>
+                            <li>Work out the keypresses required to type each word including disambiguating '#'s (with priority based on the number of occurrences)</li>
+                            <li>Calculate the keystrokes per character for the training text</li>
+                        </ol>
+
+                        <h2 class="pt-2">So, what is the (an) optimal layout?</h2>
+
+                        <p>
+                            Piping the fitness function and training text into a genetic algorithm (I used <a href="https://pygad.readthedocs.io/en/latest/">PyGAD</a>),
+                            we get the following "optimised" keyboard layout:
+                        </p>
+
+
+                        <div class="row py-3">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8 text-center">
+                                <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_8.png"/>
+                                <small>With keys 1, *, #, and 0 reserved as in T9</small>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+
+                        <p>
+                            Is this funky layout any good?
+                        </p>
+
+                        <p>
+                            This keyboard had a keystroke ratio of 1.052 on the test data. In comparison, the standard T9 keyboard scored 1.130 (i.e. worse) on the same dataset.
+                            Assuming the test text is broadly representative, this works out to about 78 fewer keypresses per 1000 characters typed.
+                        </p>
+
+                        <p>
+                            So it seems like <i>some</i> improvement is possible.
+                        </p>
+
+                        <p>
+                            But... I'm not sure 78 fewer keypresses per 1000 characters is a particularly meaningful improvement in typing experience.
+                        </p>
+
+                        <h2 class="pt-2">
+                            More keyboards?
+                        </h2>
+
+                        <p>
+                            If we can improve the keyboard with 8 keys for alphabetical characters, maybe we can improve it with <i>fewer</i> than 8 keys?
+                        </p>
+
+                        <p>
+                            By optimising the layout of the letters, can we create a keyboard with fewer keys than T9, but comparable keystrokes per character?
+                        </p>
+
+                        <p>
+                            To investigate this, I ran the same training routine as above for keyboards of size 2 up to size 7
+                            (where the original T9 experiment is size 8, because the '1' key is reserved).
+                        </p>
+
+                        <p>
+                            I also evaluated non-optimised "alphabetical" layouts for each keyboard size.
+                            These alphabetical layouts are analogous to the T9 arrangement: letters arranged on keys in alphabetical order.
+                        </p>
+
+                        <p>
+                            These keyboards gave the following ratios on the test data:
+                        </p>
+
+                        <div class="row py-3">
+                            <div class="col text-center">
+                                <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/results.png"/>
+                            </div>
+                        </div>
+
+                        <p>
+                            As expected, the optimised keyboards consistently outperform than their alphabetical counterparts on the test data.
+                            The optimised 7- and 8-key layouts both perform better than the standard T9 keyboard.
+                        </p>
+
+                        <p>
+                            Moreover, the 6-key layout performs comparably to the T9 layout. With an optimised arrangement of characters on the keys
+                            we can remove 2 alphabetical keys from the keyboard, without losing significant performance
+                            (about 6 additional keys per 1,000 characters). Not bad!
+                        </p>
+
+                        <p>
+                            You can view the different layouts below. I decided not to show the results for 2- and 3-key layouts in the above chart,
+                            which would otherwise blow out the scale. However, they remain viewable below.
+                        </p>
+
+                        <div id="layout-viewer">
+                            <div class="nav nav-tabs me-3 pb-2 text-center" id="buttons-tab" role="tablist" aria-orientation="horizontal">
+                                <a class="nav-link mr-1 disabled text-light" id="buttons-2-tab" data-bs-toggle="pill" data-bs-target="#buttons-2" type="button" role="tab" aria-controls="buttons-2" aria-selected="true">
+                                    # keys
+                                </a>
+                                <button class="nav-link btn btn-outline-light mx-1 active" id="buttons-2-tab" data-bs-toggle="pill" data-bs-target="#buttons-2" type="button" role="tab" aria-controls="buttons-2" aria-selected="true">
+                                    2
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-3-tab" data-bs-toggle="pill" data-bs-target="#buttons-3" type="button" role="tab" aria-controls="buttons-3" aria-selected="true">
+                                    3
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-4-tab" data-bs-toggle="pill" data-bs-target="#buttons-4" type="button" role="tab" aria-controls="buttons-4" aria-selected="true">
+                                    4
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-5-tab" data-bs-toggle="pill" data-bs-target="#buttons-5" type="button" role="tab" aria-controls="buttons-5" aria-selected="false">
+                                    5
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-6-tab" data-bs-toggle="pill" data-bs-target="#buttons-6" type="button" role="tab" aria-controls="buttons-6" aria-selected="false">
+                                    6
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-7-tab" data-bs-toggle="pill" data-bs-target="#buttons-7" type="button" role="tab" aria-controls="buttons-7" aria-selected="false">
+                                    7
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-8-tab" data-bs-toggle="pill" data-bs-target="#buttons-8" type="button" role="tab" aria-controls="buttons-8" aria-selected="false">
+                                    8
+                                </button>
+                                <button class="nav-link btn btn-outline-light mx-1" id="buttons-t9-tab" data-bs-toggle="pill" data-bs-target="#buttons-t9" type="button" role="tab" aria-controls="buttons-t9" aria-selected="false">
+                                    T9
+                                </button>
+                            </div>
+                            <div class="tab-content pt-2" id="buttons-tab-content">
+                                <div class="tab-pane fade show active" id="buttons-2" role="tabpanel" aria-labelledby="buttons-2">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_2.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_2.png"/>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="buttons-3" role="tabpanel" aria-labelledby="buttons-3">
+                                    <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_3.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_3.png"/>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="buttons-4" role="tabpanel" aria-labelledby="buttons-4">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_4.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_4.png"/>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="buttons-5" role="tabpanel" aria-labelledby="buttons-5">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_5.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_5.png"/>
+                                    </div>
+                                </div>
+
+                                </div>
+                                <div class="tab-pane fade" id="buttons-6" role="tabpanel" aria-labelledby="buttons-6">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_6.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_6.png"/>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="buttons-7" role="tabpanel" aria-labelledby="buttons-7">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_7.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_7.png"/>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="buttons-8" role="tabpanel" aria-labelledby="buttons-8">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>Alphabetical</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/alphabetical_8.png"/>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h4>Optimised</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/optimised_8.png"/>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="tab-pane fade" id="buttons-t9" role="tabpanel" aria-labelledby="buttons-t9">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <h4>T9</h4>
+                                        <img class="rounded-3 img-fluid" src="../src/static/img/t9-optimised/T9.png"/>
+                                    </div>
+                                    <div class="col-sm-6"></div>
+                                </div>
+                                </div>
+                            </div>
+                            <hr/>
+                        </div>
+
+
+                        <h2 class="pt-2">Conclusion</h2>
+
+                        <p>
+                            To me, looks like evidence that we can improve the keystroke efficiency of the T9 keyboard by rearranging the letter positions.
+                            But in real life, switching away from a standard layout for the sake of a very minor efficiency gain in a single language would cause far more problems than it would solve.
+                        </p>
+
+                        <p>
+                            I don't intend for this work to be anything more than a curio, but I can speculate about a couple of avenues for application of these ideas:
+                        </p>
+
+                        <ul>
+                            <li><b>Limited dexterity</b> - For people with limited dexterity, would the reduction in button pressing on a 8-key keypad be worth the time to learn an unintuitive layout?</li>
+                            <li><b>Retro-fitting input devices</b> - In cases where alphabetical input has to be retro-fitted to an input device with a limited number of buttons (or space),
+                                having an efficient, optimised layout could be useful. That said, I was unable to think of any examples, so I'm not sure if use-cases like this really exist...</li>
+                            <li><b>Niche domains</b> - Since this approach is an optimisation, one could use such an approach to develop alternative layouts for specific domains.
+                                In other words, if you have to input lots of text that is very different from standard natural language, having the tools to develop a layout for
+                                your specific task could be useful (maybe?).</li>
+                        </ul>
+
+                        <p>
+                            For serious applications, <i>Optimal-T9: An Optimized T9-like Keyboard for Small Touchscreen Devices</i>
+                            (Ryan Qin, Suwen Zhu, Yu-Hao Lin, Yu-Jung Ko, Xiaojun Bi; <a href="https://www.semanticscholar.org/paper/Optimal-T9%3A-An-Optimized-T9-like-Keyboard-for-Small-Qin-Zhu/4c48890de30fa6b6366a0f809232e2cc92d01842">Paper</a>, <a href="https://www.youtube.com/watch?v=_8YiIoAyYs8">Talk</a>)
+                            is a much more practical and thorough investigation of improving the T9 keyboard.
+                        </p>
+
+                        <p>
+                            In it, the authors develop a Qwerty-like layout on 9 keys that combines the space-efficiency of the T9
+                            with the familiarity and typing speed of a Qwerty keyboard:
+                        </p>
+
+                        <p class="mx-4">
+                            <i>
+                                A user study showed that its average input speed was 17% faster than T9 and 26% faster than a T9-like layout from literature.
+                                Optimal-T9 also drastically reduced the error rate by 72% over a regular Qwerty keyboard. Subjective ratings were in favor of Optimal-T9:
+                                it had the lowest physical, mental demands, and the best perceived-performance among all the tested keyboards.
+                            </i>
+                        </p>
+
+                        <hr>
+
+                        <h2 class="pt-2">Appendix / future developments / ideas etc</h2>
+
+                        <ul>
+
+                            <li>I didn't spend any time tuning the genetic algorithm hyperparameters. It is possible that a little more performance could be eked out with some tuning.</li>
+                            <li>Likewise, there's probably some scope to improve performance with more augmentation and transformation of the training data.</li>
+                            <li>What would it be like to actually type on one of these keyboards? How quickly do you get used to the new layout? Is the improvement in keystroke efficiency noticeable?</li>
+                            <li>
+                                What if we treated spaces and punctuation as just another character? Instead of using a dictionary to predict the text given the input (as in T9),
+                                we could use a language model to evaluate the most likely sentences typed. For long enough input sequences the statistics would bear out the correct character string.
+                                Perhaps this could enable us to reduce the number of input buttons down even further, maybe even down to... <a href="https://en.wikipedia.org/wiki/Talking_drum#How_they_%22talk%22">2 inputs</a>?
+                            </li>
+                        </ul>
+
+                    </div>
+                    <div class="col-sm-2 col-lg-3 col-xxl-4"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
