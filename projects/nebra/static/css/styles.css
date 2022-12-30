@@ -27,3 +27,30 @@ img {
     max-width: 960px;
     margin: 0 auto;
 }
+
+.introduction {
+    margin-bottom: 0%;
+}
+
+
+/* Link row */
+
+.link-row {
+    display: flex;
+    margin-top: 0%;
+}
+
+.link-left {
+    width: 49%;
+    text-align: right;
+}
+
+.link-divider {
+    width: 2%;
+    text-align: center;
+}
+
+.link-right {
+    width: 49%;
+    text-align: left;
+}
